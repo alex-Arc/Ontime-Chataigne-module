@@ -1,0 +1,53 @@
+{
+  "name": "Ontime",
+  "type": "WebSocket Client",
+  "path": "Custom",
+
+  "version": "1.0.0",
+  "description": "Module for interacting with ontime",
+  "url": "",
+  "downloadURL": "",
+
+  "hasInput": true,
+  "hasOutput": true,
+
+  "hideDefaultCommands": true,
+
+  "defaults": {
+    "protocol": "JSON",
+    "serverPath": "127.0.0.1:4001/ws",
+    "useSecureConnection": false
+  },
+
+  "parameters": {
+    "Module param": {
+      "type": "Integer"
+    }
+  },
+
+  "hideDefaultParameters": [
+    "protocol",
+    "messageStructure",
+    "firstValueIsTheName",
+    "useSecureConnection"
+  ],
+
+  "scripts": ["./moduleScript.js"],
+
+  "values": {
+    "clockmillis": { "type": "Integer", "readOnly": true },
+    "clock": { "type": "String", "readOnly": true },
+    "onAir": { "shortName": "onAir", "type": "Boolean", "readOnly": true },
+    "playback": {
+      "type": "Enum",
+      "options": {
+        "play": "Play",
+        "stop": "Stop",
+        "armed": "Aremed",
+        "paused": "Pause",
+        "roll": "Roll"
+      },
+      "readOnly": true
+    }
+  }
+}
