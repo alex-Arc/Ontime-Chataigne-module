@@ -1,4 +1,6 @@
-function init() {}
+function init() {
+  
+}
 
 function moduleParameterChanged(param) {}
 
@@ -36,22 +38,19 @@ function wsMessageReceived(message) {
   var payload = message.payload;
 
   if (type == "ontime") {
-    local.values.clock.set(millisToString(payload.clock));
-
-    local.values
-      .getChild("Timer")
-      .getChild("playback")
-      .set(payload.timer.playback);
   } else if (type == "ontime-clock") {
     local.values.clock.set(millisToString(payload));
   } else if (type == "ontime-timer") {
     var timer = local.values.getChild("Timer");
-    timer.getChild("Playback").set(payload.timer.playback);
+    timer.getChild("Playback").set(payload.playback);
     timer.getChild("Current").set(millisToString(payload.current));
     timer.getChild("Duration").set(millisToString(payload.duration));
     timer.getChild("Elapsed").set(millisToString(payload.elapsed));
-
-    script.log(payload.playback);
+  } else if (type == "ontime-eventNext") {
+    var timer = local.values.getChild("Next Event");
+    timer.getChild("Title").set(payload.title);
+    timer.getChild("Colour").set(payload.colour);
+    timer.getChild("Cue").set(payload.cue);
   } else {
     script.log("type received: " + type);
   }

@@ -43,6 +43,15 @@
       "Elapsed": { "type": "String", "readOnly": true },
       "Playback": { "type": "String", "readOnly": true }
     },
+    "Next Event": {
+      "type": "Container",
+      "Title": { "type": "String", "readOnly": true },
+      "Colour": { "type": "Color", "readOnly": true },
+      "Cue": { "type": "String", "readOnly": true },
+      "Custom": {
+        "type": "Container"
+      }
+    },
     "Clock": { "type": "String", "readOnly": true }
   }
 }
