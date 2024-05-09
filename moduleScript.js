@@ -4,15 +4,30 @@ function moduleParameterChanged(param) {}
 
 function moduleValueChanged(value) {
   // script.log("moduleValueChanged: " + value);
-
 }
 
-function millisToString(millis) {
-  var sec = parseInt(millis / 1000) % 60;
-  var min = parseInt(millis / (1000 * 60)) % 60;
-  var hour = parseInt(millis / (1000 * 60 * 60)) % 60;
+/**
+ *
+ * @param {number} val
+ * @returns {string}
+ */
+function pad(val) {
+  return val > 9 ? "" + val : "0" + val;
+}
 
-  return hour + ":" + min + ":" + sec;
+/**
+ *
+ * @param {number} millis
+ * @returns {string}
+ */
+function millisToString(millis) {
+  var isNegative = millis < 0 ? "-" : "";
+  millis = Math.abs(millis);
+  var sec = pad(parseInt(millis / 1000) % 60);
+  var min = pad(parseInt(millis / (1000 * 60)) % 60);
+  var hour = pad(parseInt(millis / (1000 * 60 * 60)) % 60);
+
+  return isNegative + hour + ":" + min + ":" + sec;
 }
 
 function wsMessageReceived(message) {
@@ -21,23 +36,23 @@ function wsMessageReceived(message) {
   var payload = message.payload;
 
   if (type == "ontime") {
-    // script.log("type received: " + type);
-    // script.log("type received: " + JSON.stringify(message));
-    
-    local.values.clockmillis.set(payload.clock);
     local.values.clock.set(millisToString(payload.clock));
-    
-    local.values.onAir.set(payload.onAir);
 
-    local.values.playback.set(payload.timer.playback);
-    script.log(JSON.stringify(payload.timer));
-
+    local.values
+      .getChild("Timer")
+      .getChild("playback")
+      .set(payload.timer.playback);
   } else if (type == "ontime-clock") {
-    local.values.clockmillis.set(payload);
     local.values.clock.set(millisToString(payload));
-  } else if (type == "ontime-onAir") {
-    local.values.onAir.set(payload);
-  }  else {
+  } else if (type == "ontime-timer") {
+    var timer = local.values.getChild("Timer");
+    timer.getChild("Playback").set(payload.timer.playback);
+    timer.getChild("Current").set(millisToString(payload.current));
+    timer.getChild("Duration").set(millisToString(payload.duration));
+    timer.getChild("Elapsed").set(millisToString(payload.elapsed));
+
+    script.log(payload.playback);
+  } else {
     script.log("type received: " + type);
   }
 }

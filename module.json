@@ -1,11 +1,11 @@
 {
   "name": "Ontime",
   "type": "WebSocket Client",
-  "path": "Custom",
+  "path": "Software",
 
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Module for interacting with ontime",
-  "url": "",
+  "url": "https://github.com/alex-Arc/Ontime-Chataigne-module",
   "downloadURL": "",
 
   "hasInput": true,
@@ -16,7 +16,8 @@
   "defaults": {
     "protocol": "JSON",
     "serverPath": "127.0.0.1:4001/ws",
-    "useSecureConnection": false
+    "useSecureConnection": false,
+    "autoAdd": false
   },
 
   "parameters": {
@@ -35,19 +36,13 @@
   "scripts": ["./moduleScript.js"],
 
   "values": {
-    "clockmillis": { "type": "Integer", "readOnly": true },
-    "clock": { "type": "String", "readOnly": true },
-    "onAir": { "shortName": "onAir", "type": "Boolean", "readOnly": true },
-    "playback": {
-      "type": "Enum",
-      "options": {
-        "play": "Play",
-        "stop": "Stop",
-        "armed": "Aremed",
-        "paused": "Pause",
-        "roll": "Roll"
-      },
-      "readOnly": true
-    }
+    "Timer": {
+      "type": "Container",
+      "Current": { "type": "String", "readOnly": true },
+      "Duration": { "type": "String", "readOnly": true },
+      "Elapsed": { "type": "String", "readOnly": true },
+      "Playback": { "type": "String", "readOnly": true }
+    },
+    "Clock": { "type": "String", "readOnly": true }
   }
 }
