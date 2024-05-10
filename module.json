@@ -26,13 +26,7 @@
     }
   },
 
-  "hideDefaultParameters": [
-    "autoAdd",
-    "protocol",
-    "messageStructure",
-    "firstValueIsTheName",
-    "useSecureConnection"
-  ],
+  "hideDefaultParameters": ["autoAdd", "protocol", "messageStructure", "firstValueIsTheName", "useSecureConnection"],
 
   "scripts": ["./Ontime.js"],
 
@@ -54,133 +48,231 @@
     "messageTimer": {
       "type": "Container",
       "collapsed": true,
-      "text": { "type": "String", "readOnly": true},
-      "visible": { "type": "Boolean", "readOnly": true},
-      "blink": { "type": "Boolean", "readOnly": true},
-      "blackout": { "type": "Boolean", "readOnly": true}
+      "text": { "type": "String", "readOnly": true },
+      "visible": { "type": "Boolean", "readOnly": true },
+      "blink": { "type": "Boolean", "readOnly": true },
+      "blackout": { "type": "Boolean", "readOnly": true }
     },
     "messageExternal": {
       "type": "Container",
       "collapsed": true,
-      "text": { "type": "String", "readOnly": true},
-      "visible": { "type": "Boolean", "readOnly": true}
+      "text": { "type": "String", "readOnly": true },
+      "visible": { "type": "Boolean", "readOnly": true }
     },
     "runtime": {
       "type": "Container",
       "collapsed": true,
-      "selectedEventIndex": { "type": "Integer", "readOnly": true},
-      "numEvents": { "type": "Integer", "readOnly": true},
-      "offset": { "type": "Integer", "readOnly": true},
-      "plannedStart": { "type": "Integer", "readOnly": true},
-      "plannedEnd": { "type": "Integer", "readOnly": true},
-      "actualStart": { "type": "Integer", "readOnly": true},
-      "expectedEnd": { "type": "Integer", "readOnly": true}
+      "selectedEventIndex": { "type": "Integer", "readOnly": true },
+      "numEvents": { "type": "Integer", "readOnly": true },
+      "offset": { "type": "Integer", "readOnly": true },
+      "plannedStart": { "type": "Integer", "readOnly": true },
+      "plannedEnd": { "type": "Integer", "readOnly": true },
+      "actualStart": { "type": "Integer", "readOnly": true },
+      "expectedEnd": { "type": "Integer", "readOnly": true }
     },
     "timer": {
       "type": "Container",
       "collapsed": true,
-      "addedTime": { "type": "Integer", "readOnly": true},
-      "current": { "type": "Integer", "readOnly": true},
-      "duration": { "type": "Integer", "readOnly": true},
-      "elapsed": { "type": "Integer", "readOnly": true},
-      "expectedFinish": { "type": "Integer", "readOnly": true},
-      "finishedAt": { "type": "Integer", "readOnly": true},
-      "playback": { "type": "Enum", "options": { "play":"play", "roll":"roll","pause":"pause","stop":"stop","armed":"armed"},"readOnly": true},
-      "secondaryTimer": { "type": "Integer", "readOnly": true},
-      "startedAt": { "type": "String", "readOnly": true}
+      "addedTime": { "type": "Integer", "readOnly": true },
+      "current": { "type": "Integer", "readOnly": true },
+      "duration": { "type": "Integer", "readOnly": true },
+      "elapsed": { "type": "Integer", "readOnly": true },
+      "expectedFinish": { "type": "Integer", "readOnly": true },
+      "finishedAt": { "type": "Integer", "readOnly": true },
+      "playback": {
+        "type": "Enum",
+        "options": {
+          "play": "play",
+          "roll": "roll",
+          "pause": "pause",
+          "stop": "stop",
+          "armed": "armed"
+        },
+        "readOnly": true
+      },
+      "secondaryTimer": { "type": "Integer", "readOnly": true },
+      "startedAt": { "type": "String", "readOnly": true }
     },
     "eventNow": {
       "type": "Container",
       "collapsed": false,
-      "id": { "type": "String", "readOnly": true},
-      "title": { "type": "String", "readOnly": true},
-      "cue": { "type": "String", "readOnly": true},
-      "colour": { "type": "String", "readOnly": true},
-      "note": { "type": "String", "readOnly": true},
-      "timeStart": { "type": "Integer", "readOnly": true},
-      "timeEnd": { "type": "Integer", "readOnly": true},
-      "duration": { "type": "Integer", "readOnly": true},
-      "delay": { "type": "Boolean", "readOnly": true},
-      "isPublic": { "type": "Boolean", "readOnly": true},
-      "skip": { "type": "Boolean", "readOnly": true},
-      "linkStart": { "type": "Boolean", "readOnly": true},
-      "timeDanger": { "type": "Integer", "readOnly": true},
-      "timeWarning": { "type": "Integer", "readOnly": true},
-      "endAction": { "type": "Enum", "options": { "none":"none", "stop":"stop","Load next":"load-next","Play next":"play-next"},"readOnly": true},
-      "timerType": { "type": "Enum", "options": { "Count down":"count-down", "Count up":"count-up","Time to end":"time-to-end","Clock":"clock"},"readOnly": true},
-      "eventType": { "type": "Enum", "options": { "Event":"event"},"readOnly": true}
+      "id": { "type": "String", "readOnly": true },
+      "title": { "type": "String", "readOnly": true },
+      "cue": { "type": "String", "readOnly": true },
+      "colour": { "type": "String", "readOnly": true },
+      "note": { "type": "String", "readOnly": true },
+      "timeStart": { "type": "Integer", "readOnly": true },
+      "timeEnd": { "type": "Integer", "readOnly": true },
+      "duration": { "type": "Integer", "readOnly": true },
+      "delay": { "type": "Boolean", "readOnly": true },
+      "isPublic": { "type": "Boolean", "readOnly": true },
+      "skip": { "type": "Boolean", "readOnly": true },
+      "linkStart": { "type": "Boolean", "readOnly": true },
+      "timeDanger": { "type": "Integer", "readOnly": true },
+      "timeWarning": { "type": "Integer", "readOnly": true },
+      "endAction": {
+        "type": "Enum",
+        "options": {
+          "none": "none",
+          "stop": "stop",
+          "Load next": "load-next",
+          "Play next": "play-next"
+        },
+        "readOnly": true
+      },
+      "timerType": {
+        "type": "Enum",
+        "options": {
+          "Count down": "count-down",
+          "Count up": "count-up",
+          "Time to end": "time-to-end",
+          "Clock": "clock"
+        },
+        "readOnly": true
+      },
+      "eventType": {
+        "type": "Enum",
+        "options": { "Event": "event" },
+        "readOnly": true
+      }
     },
     "eventNext": {
       "type": "Container",
       "collapsed": false,
-      "id": { "type": "String", "readOnly": true},
-      "title": { "type": "String", "readOnly": true},
-      "cue": { "type": "String", "readOnly": true},
-      "colour": { "type": "String", "readOnly": true},
-      "note": { "type": "String", "readOnly": true},
-      "timeStart": { "type": "Integer", "readOnly": true},
-      "timeEnd": { "type": "Integer", "readOnly": true},
-      "duration": { "type": "Integer", "readOnly": true},
-      "delay": { "type": "Boolean", "readOnly": true},
-      "isPublic": { "type": "Boolean", "readOnly": true},
-      "skip": { "type": "Boolean", "readOnly": true},
-      "linkStart": { "type": "Boolean", "readOnly": true},
-      "timeDanger": { "type": "Integer", "readOnly": true},
-      "timeWarning": { "type": "Integer", "readOnly": true},
-      "endAction": { "type": "Enum", "options": { "none":"none", "stop":"stop","Load next":"load-next","Play next":"play-next"},"readOnly": true},
-      "timerType": { "type": "Enum", "options": { "Count down":"count-down", "Count up":"count-up","Time to end":"time-to-end","Clock":"clock"},"readOnly": true},
-      "eventType": { "type": "Enum", "options": { "Event":"event"},"readOnly": true}
+      "id": { "type": "String", "readOnly": true },
+      "title": { "type": "String", "readOnly": true },
+      "cue": { "type": "String", "readOnly": true },
+      "colour": { "type": "String", "readOnly": true },
+      "note": { "type": "String", "readOnly": true },
+      "timeStart": { "type": "Integer", "readOnly": true },
+      "timeEnd": { "type": "Integer", "readOnly": true },
+      "duration": { "type": "Integer", "readOnly": true },
+      "delay": { "type": "Boolean", "readOnly": true },
+      "isPublic": { "type": "Boolean", "readOnly": true },
+      "skip": { "type": "Boolean", "readOnly": true },
+      "linkStart": { "type": "Boolean", "readOnly": true },
+      "timeDanger": { "type": "Integer", "readOnly": true },
+      "timeWarning": { "type": "Integer", "readOnly": true },
+      "endAction": {
+        "type": "Enum",
+        "options": {
+          "none": "none",
+          "stop": "stop",
+          "Load next": "load-next",
+          "Play next": "play-next"
+        },
+        "readOnly": true
+      },
+      "timerType": {
+        "type": "Enum",
+        "options": {
+          "Count down": "count-down",
+          "Count up": "count-up",
+          "Time to end": "time-to-end",
+          "Clock": "clock"
+        },
+        "readOnly": true
+      },
+      "eventType": {
+        "type": "Enum",
+        "options": { "Event": "event" },
+        "readOnly": true
+      }
     },
     "publicEventNow": {
       "type": "Container",
       "collapsed": false,
-      "id": { "type": "String", "readOnly": true},
-      "title": { "type": "String", "readOnly": true},
-      "cue": { "type": "String", "readOnly": true},
-      "colour": { "type": "String", "readOnly": true},
-      "note": { "type": "String", "readOnly": true},
-      "timeStart": { "type": "Integer", "readOnly": true},
-      "timeEnd": { "type": "Integer", "readOnly": true},
-      "duration": { "type": "Integer", "readOnly": true},
-      "delay": { "type": "Boolean", "readOnly": true},
-      "isPublic": { "type": "Boolean", "readOnly": true},
-      "skip": { "type": "Boolean", "readOnly": true},
-      "linkStart": { "type": "Boolean", "readOnly": true},
-      "timeDanger": { "type": "Integer", "readOnly": true},
-      "timeWarning": { "type": "Integer", "readOnly": true},
-      "endAction": { "type": "Enum", "options": { "none":"none", "stop":"stop","Load next":"load-next","Play next":"play-next"},"readOnly": true},
-      "timerType": { "type": "Enum", "options": { "Count down":"count-down", "Count up":"count-up","Time to end":"time-to-end","Clock":"clock"},"readOnly": true},
-      "eventType": { "type": "Enum", "options": { "Event":"event"},"readOnly": true}
+      "id": { "type": "String", "readOnly": true },
+      "title": { "type": "String", "readOnly": true },
+      "cue": { "type": "String", "readOnly": true },
+      "colour": { "type": "String", "readOnly": true },
+      "note": { "type": "String", "readOnly": true },
+      "timeStart": { "type": "Integer", "readOnly": true },
+      "timeEnd": { "type": "Integer", "readOnly": true },
+      "duration": { "type": "Integer", "readOnly": true },
+      "delay": { "type": "Boolean", "readOnly": true },
+      "isPublic": { "type": "Boolean", "readOnly": true },
+      "skip": { "type": "Boolean", "readOnly": true },
+      "linkStart": { "type": "Boolean", "readOnly": true },
+      "timeDanger": { "type": "Integer", "readOnly": true },
+      "timeWarning": { "type": "Integer", "readOnly": true },
+      "endAction": {
+        "type": "Enum",
+        "options": {
+          "none": "none",
+          "stop": "stop",
+          "Load next": "load-next",
+          "Play next": "play-next"
+        },
+        "readOnly": true
+      },
+      "timerType": {
+        "type": "Enum",
+        "options": {
+          "Count down": "count-down",
+          "Count up": "count-up",
+          "Time to end": "time-to-end",
+          "Clock": "clock"
+        },
+        "readOnly": true
+      },
+      "eventType": {
+        "type": "Enum",
+        "options": { "Event": "event" },
+        "readOnly": true
+      }
     },
     "publicEventNext": {
       "type": "Container",
       "collapsed": false,
-      "id": { "type": "String", "readOnly": true},
-      "title": { "type": "String", "readOnly": true},
-      "cue": { "type": "String", "readOnly": true},
-      "colour": { "type": "String", "readOnly": true},
-      "note": { "type": "String", "readOnly": true},
-      "timeStart": { "type": "Integer", "readOnly": true},
-      "timeEnd": { "type": "Integer", "readOnly": true},
-      "duration": { "type": "Integer", "readOnly": true},
-      "delay": { "type": "Boolean", "readOnly": true},
-      "isPublic": { "type": "Boolean", "readOnly": true},
-      "skip": { "type": "Boolean", "readOnly": true},
-      "linkStart": { "type": "Boolean", "readOnly": true},
-      "timeDanger": { "type": "Integer", "readOnly": true},
-      "timeWarning": { "type": "Integer", "readOnly": true},
-      "endAction": { "type": "Enum", "options": { "none":"none", "stop":"stop","Load next":"load-next","Play next":"play-next"},"readOnly": true},
-      "timerType": { "type": "Enum", "options": { "Count down":"count-down", "Count up":"count-up","Time to end":"time-to-end","Clock":"clock"},"readOnly": true},
-      "eventType": { "type": "Enum", "options": { "Event":"event"},"readOnly": true}
+      "id": { "type": "String", "readOnly": true },
+      "title": { "type": "String", "readOnly": true },
+      "cue": { "type": "String", "readOnly": true },
+      "colour": { "type": "String", "readOnly": true },
+      "note": { "type": "String", "readOnly": true },
+      "timeStart": { "type": "Integer", "readOnly": true },
+      "timeEnd": { "type": "Integer", "readOnly": true },
+      "duration": { "type": "Integer", "readOnly": true },
+      "delay": { "type": "Boolean", "readOnly": true },
+      "isPublic": { "type": "Boolean", "readOnly": true },
+      "skip": { "type": "Boolean", "readOnly": true },
+      "linkStart": { "type": "Boolean", "readOnly": true },
+      "timeDanger": { "type": "Integer", "readOnly": true },
+      "timeWarning": { "type": "Integer", "readOnly": true },
+      "endAction": {
+        "type": "Enum",
+        "options": {
+          "none": "none",
+          "stop": "stop",
+          "Load next": "load-next",
+          "Play next": "play-next"
+        },
+        "readOnly": true
+      },
+      "timerType": {
+        "type": "Enum",
+        "options": {
+          "Count down": "count-down",
+          "Count up": "count-up",
+          "Time to end": "time-to-end",
+          "Clock": "clock"
+        },
+        "readOnly": true
+      },
+      "eventType": {
+        "type": "Enum",
+        "options": { "Event": "event" },
+        "readOnly": true
+      }
     },
     "log": {
       "type": "Container",
       "collapsed": false,
-      "id": { "type": "String", "readOnly": true},
-      "level": { "type": "String", "readOnly": true},
-      "origin": { "type": "String", "readOnly": true},
-      "text": { "type": "String", "readOnly": true},
-      "time": { "type": "String", "readOnly": true},
+      "id": { "type": "String", "readOnly": true },
+      "level": { "type": "String", "readOnly": true },
+      "origin": { "type": "String", "readOnly": true },
+      "text": { "type": "String", "readOnly": true },
+      "time": { "type": "String", "readOnly": true }
     },
     "Aux timer": {
       "type": "Container",
@@ -191,35 +283,39 @@
     }
   },
 
-    "commands": {
+  "commands": {
     "Event action": {
       "callback": "eventAction",
-      "parameters":
-      {
+      "parameters": {
         "Target type": {
-          "type":"Enum", "options": {
-            "Target ID":"id",
-            "Target cue name":"cue",
-            "Target list index":"index"
-          }, "description":"Unique ID, cue name, list number"
+          "type": "Enum",
+          "options": {
+            "Target ID": "id",
+            "Target cue name": "cue",
+            "Target list index": "index"
+          },
+          "description": "Unique ID, cue name, list number"
         },
-        "Target identifier": { "type": "String", "description":"Type in target identifier" },
+        "Target identifier": {
+          "type": "String",
+          "description": "Type in target identifier"
+        },
         "Target action": {
-          "type":"Enum", "options":
-          {
+          "type": "Enum",
+          "options": {
             "Start": "start",
             "Load": "load"
           },
-          "description":"Select action to preform"
+          "description": "Select action to preform"
         }
       }
     },
     "General action": {
-      "callback":"generalAction",
+      "callback": "generalAction",
       "parameters": {
         "General action": {
-          "type":"Enum", "options":
-          {
+          "type": "Enum",
+          "options": {
             "Start next": "startNext",
             "Start loaded": "start",
             "Start previous": "startPrevious",
@@ -230,10 +326,16 @@
             "Roll": "roll",
             "Stop": "stop",
             "Offset": "offset"
-          }, "description":"Select action to preform"
+          },
+          "description": "Select action to preform"
         },
         "Offset": {
-          "type": "Float", "ui":"time", "min": -72000, "max": 72000, "default": 0, "description": "Offset current counter",
+          "type": "Float",
+          "ui": "time",
+          "min": -72000,
+          "max": 72000,
+          "default": 0,
+          "description": "Offset current counter",
           "dependency": {
             "source": "generalAction",
             "value": "offset",
@@ -244,36 +346,89 @@
       }
     },
     "Message Action": {
-      "callback":"messageAction",
+      "callback": "messageAction",
       "parameters": {
         "Event action": {
-          "type":"Enum", "options": {
-            "Set timer message":"setTimerMessage",
-            "Show timer message":"showTimerMessage",
-            "Blink Timer":"blinkTimer",
-            "Blackout Timer":"blackoutTimer",
-            "Set external message":"setExternalMessage",
-            "Show external message":"showExternalMessage"
-          }, "description":"Select action to preform"
+          "type": "Enum",
+          "options": {
+            "Set timer message": "setTimerMessage",
+            "Show timer message": "showTimerMessage",
+            "Blink Timer": "blinkTimer",
+            "Blackout Timer": "blackoutTimer",
+            "Set external message": "setExternalMessage",
+            "Show external message": "showExternalMessage"
+          },
+          "description": "Select action to preform"
         },
-        "Timer message": {            "type": "String", "dependency": { "source": "eventAction", "value": "setTimerMessage", "check":"equals", "action":"show"}        },
-        "Display timer message": {    "type": "Boolean", "dependency": { "source": "eventAction", "value": "showTimerMessage", "check":"equals", "action":"show"}        },
-        "Blink timer": {              "type": "Boolean", "dependency": { "source": "eventAction", "value": "blinkTimer", "check":"equals", "action":"show"}        },
-        "Blackout timer": {           "type": "Boolean", "dependency": { "source": "eventAction", "value": "blackoutTimer", "check":"equals", "action":"show"}        },
-        "External message": {         "type": "String", "dependency": { "source": "eventAction", "value": "setExternalMessage", "check":"equals", "action":"show"}        },
-        "Display external message": { "type": "Boolean", "dependency": { "source": "eventAction", "value": "showExternalMessage", "check":"equals", "action":"show"}        }
+        "Timer message": {
+          "type": "String",
+          "dependency": {
+            "source": "eventAction",
+            "value": "setTimerMessage",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "Display timer message": {
+          "type": "Boolean",
+          "dependency": {
+            "source": "eventAction",
+            "value": "showTimerMessage",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "Blink timer": {
+          "type": "Boolean",
+          "dependency": {
+            "source": "eventAction",
+            "value": "blinkTimer",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "Blackout timer": {
+          "type": "Boolean",
+          "dependency": {
+            "source": "eventAction",
+            "value": "blackoutTimer",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "External message": {
+          "type": "String",
+          "dependency": {
+            "source": "eventAction",
+            "value": "setExternalMessage",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "Display external message": {
+          "type": "Boolean",
+          "dependency": {
+            "source": "eventAction",
+            "value": "showExternalMessage",
+            "check": "equals",
+            "action": "show"
+          }
+        }
       }
     },
     "Aux timer": {
-      "callback":"auxTimer",
-      "parameters":
-      {
+      "callback": "auxTimer",
+      "parameters": {
         "index": {
-          "type": "Integer", "default": 1, "min":1, "max":10, "readOnly": true
+          "type": "Integer",
+          "default": 1,
+          "min": 1,
+          "max": 10,
+          "readOnly": true
         },
         "Action": {
-          "type":"Enum", "options":
-          {
+          "type": "Enum",
+          "options": {
             "Set": "set",
             "Start": "start",
             "Pause": "pause",
@@ -281,25 +436,43 @@
           }
         },
         "Timer": {
-          "type":"Float", "ui":"time", "default": 0, "min":0, "max":359999, "dependency": { "source": "action", "value":"set", "check":"equals", "action":"show"}
+          "type": "Float",
+          "ui": "time",
+          "default": 0,
+          "min": 0,
+          "max": 359999,
+          "dependency": {
+            "source": "action",
+            "value": "set",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Direction": {
-          "type":"Enum", "options":
-          {
+          "type": "Enum",
+          "options": {
             "Up": "count-up",
             "Down": "count-down"
-          }, "dependency": { "source": "action", "value":"set", "check":"equals", "action":"show"}
+          },
+          "dependency": {
+            "source": "action",
+            "value": "set",
+            "check": "equals",
+            "action": "show"
+          }
         }
       }
     },
     "Make change": {
-      "callback":"changeEvent",
-      "parameters":
-      {
-        "Event identifier": { "type": "String", "description":"Type in target identifier" },
+      "callback": "changeEvent",
+      "parameters": {
+        "Event identifier": {
+          "type": "String",
+          "description": "Type in target identifier"
+        },
         "Target change": {
-          "type":"Enum", "options":
-          {
+          "type": "Enum",
+          "options": {
             "Title": "title",
             "Note": "note",
             "Cue name": "cue",
@@ -318,84 +491,174 @@
             "Write cue color": "color",
             "Custom fields": "custom"
           },
-          "description":"Select action to preform"
+          "description": "Select action to preform"
         },
         "Title": {
           "type": "String",
-          "dependency": { "source": "targetChange", "value": "title", "check": "equals", "action": "show"  }
+          "dependency": {
+            "source": "targetChange",
+            "value": "title",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Note": {
           "type": "String",
-          "dependency": { "source": "targetChange", "value": "note", "check": "equals", "action": "show"  }
+          "dependency": {
+            "source": "targetChange",
+            "value": "note",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Cue Name": {
           "type": "String",
-          "dependency": { "source": "targetChange", "value": "cue", "check": "equals", "action": "show"  }
+          "dependency": {
+            "source": "targetChange",
+            "value": "cue",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Start time": {
-          "type": "Float", "ui":"time", "min":0, "max":86400, "default":0,
-          "dependency": { "source": "targetChange", "value": "timeStart", "check": "equals", "action": "show"  }
+          "type": "Float",
+          "ui": "time",
+          "min": 0,
+          "max": 86400,
+          "default": 0,
+          "dependency": {
+            "source": "targetChange",
+            "value": "timeStart",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Link start": {
           "type": "Boolean",
-          "dependency": { "source": "targetChange", "value": "linkStart", "check": "equals", "action": "show"  },
+          "dependency": {
+            "source": "targetChange",
+            "value": "linkStart",
+            "check": "equals",
+            "action": "show"
+          },
           "description": "Connect start time to end time of previous event."
         },
         "End time": {
-          "type": "Float", "ui":"time", "min":0, "max":86400, "default":0,
-          "dependency": { "source": "targetChange", "value": "timeEnd", "check": "equals", "action": "show"  }
+          "type": "Float",
+          "ui": "time",
+          "min": 0,
+          "max": 86400,
+          "default": 0,
+          "dependency": {
+            "source": "targetChange",
+            "value": "timeEnd",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Locked time": {
-          "type":"Enum", "options":
-          {
+          "type": "Enum",
+          "options": {
             "End Time": "lock-end",
             "Duration": "lock-duration"
           },
-          "dependency": { "source": "targetChange", "value": "timeStrategy", "check": "equals", "action": "show"  }
+          "dependency": {
+            "source": "targetChange",
+            "value": "timeStrategy",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Duration": {
-          "type": "Float", "ui":"time", "min":0, "max":86400, "default":0,
-          "dependency": { "source": "targetChange", "value": "duration", "check": "equals", "action": "show" }
+          "type": "Float",
+          "ui": "time",
+          "min": 0,
+          "max": 86400,
+          "default": 0,
+          "dependency": {
+            "source": "targetChange",
+            "value": "duration",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Skip event": {
           "type": "Boolean",
-          "dependency": { "source": "targetChange", "value": "skip", "check": "equals", "action": "show"  }
+          "dependency": {
+            "source": "targetChange",
+            "value": "skip",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Public": {
           "type": "Boolean",
-          "dependency": { "source": "targetChange", "value": "isPublic", "check": "equals", "action": "show"  }
+          "dependency": {
+            "source": "targetChange",
+            "value": "isPublic",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Timer type": {
-          "type":"Enum", "options":
-          {
+          "type": "Enum",
+          "options": {
             "Count down": "count-down",
             "Count up": "count-up",
             "Time to end": "time-to-end",
             "Clock": "clock"
           },
-          "dependency": { "source": "targetChange", "value": "timerType", "check": "equals", "action": "show"  }
+          "dependency": {
+            "source": "targetChange",
+            "value": "timerType",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "End action": {
-          "type":"Enum", "options":
-          {
+          "type": "Enum",
+          "options": {
             "None": "none",
             "Stop": "stop",
             "Load next": "load-next",
             "Play next": "play-next"
           },
-          "dependency": { "source": "targetChange", "value": "endAction", "check": "equals", "action": "show"  }
+          "dependency": {
+            "source": "targetChange",
+            "value": "endAction",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Warning time": {
-          "type": "Float", "ui":"time", "min":0, "max":86400, "default":120,
-          "dependency": { "source": "targetChange", "value": "timeWarning", "check": "equals", "action": "show"  }
+          "type": "Float",
+          "ui": "time",
+          "min": 0,
+          "max": 86400,
+          "default": 120,
+          "dependency": {
+            "source": "targetChange",
+            "value": "timeWarning",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Danger time": {
-          "type": "Float", "ui":"time", "min":0, "max":86400, "default":60,
-          "dependency": { "source": "targetChange", "value": "timeDanger", "check": "equals", "action": "show"  }
+          "type": "Float",
+          "ui": "time",
+          "min": 0,
+          "max": 86400,
+          "default": 60,
+          "dependency": {
+            "source": "targetChange",
+            "value": "timeDanger",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Select cue color": {
-          "type":"Enum", "options":
-          {
+          "type": "Enum",
+          "options": {
             "None": "none",
             "Orange-400": "#ffcc78",
             "Orange-600": "#FFab33",
@@ -410,20 +673,40 @@
             "Gray-400": "#9d9d9d",
             "Gray-600": "#ececec"
           },
-          "dependency": { "source": "targetChange", "value": "colour", "check": "equals", "action": "show"  }
+          "dependency": {
+            "source": "targetChange",
+            "value": "colour",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Set cue colour": {
           "type": "String",
           "description": "# hex color or named css color",
-          "dependency": { "source": "targetChange", "value": "color", "check": "equals", "action": "show"  }
+          "dependency": {
+            "source": "targetChange",
+            "value": "color",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Custom field id": {
           "type": "String",
-          "dependency": { "source": "targetChange", "value": "custom", "check": "equals", "action": "show"  }
+          "dependency": {
+            "source": "targetChange",
+            "value": "custom",
+            "check": "equals",
+            "action": "show"
+          }
         },
         "Custom field text": {
           "type": "String",
-          "dependency": { "source": "targetChange", "value": "custom", "check": "equals", "action": "show"  }
+          "dependency": {
+            "source": "targetChange",
+            "value": "custom",
+            "check": "equals",
+            "action": "show"
+          }
         }
       }
     }
