@@ -30,6 +30,29 @@ function millisToString(millis) {
   return isNegative + hour + ':' + min + ':' + sec;
 }
 
+function setEventData(eventObject, payload) {
+  if (payload) {
+    eventObject.id.set(payload.id);
+    eventObject.title.set(payload.title);
+    eventObject.start.set(millisToString(payload.timeStart));
+    eventObject.end.set(millisToString(payload.timeEnd));
+    eventObject.duration.set(millisToString(payload.duration));
+    eventObject.endAction.setData(payload.endAction);
+    eventObject.timerType.setData(payload.timerType);
+    eventObject.public.set(payload.isPublic);
+    eventObject.skip.set(payload.skip);
+    eventObject.note.set(payload.note);
+    //TODO: Colour conversion
+    eventObject.colour.set(payload.colour);
+    eventObject.cue.set(payload.cue);
+    eventObject.warning.set(payload.timeWarning);
+    eventObject.danger.set(payload.timeDanger);
+    //TODO: add custom data
+  } else {
+    script.log('No eventNow data');
+  } //TODO: Should this clear all values??
+}
+
 function wsMessageReceived(message) {
   message = JSON.parse(message);
   var type = message.type;
@@ -38,155 +61,70 @@ function wsMessageReceived(message) {
   if (type == 'ontime') {
   } else if (type == 'ontime-clock') {
     local.values.clock.set(millisToString(payload));
-  } else if (type == 'ontime-timer') {
-    var timer = local.values.getChild('Timer');
-    timer.getChild('Playback').set(payload.playback);
-    timer.getChild('Current').set(millisToString(payload.current));
-    timer.getChild('Duration').set(millisToString(payload.duration));
-    timer.getChild('Elapsed').set(millisToString(payload.elapsed));
-  } else if (type == 'ontime-eventNext') {
-    var timer = local.values.getChild('Next Event');
-    timer.getChild('Title').set(payload.title);
-    timer.getChild('Colour').set(payload.colour);
-    timer.getChild('Cue').set(payload.cue);
-  } else if (type == 'ontime-clock') {
-    local.values.clockmillis.set(payload);
-    local.values.clock.set(millisToString(payload));
   } else if (type == 'ontime-onAir') {
     local.values.onAir.set(payload);
   } else if (type == 'ontime-timer') {
-    local.values.timer.addedTime.set(payload.addedTime);
-    local.values.timer.current.set(payload.current);
-    local.values.timer.duration.set(payload.duration);
-    local.values.timer.elapsed.set(payload.elapsed);
-    local.values.timer.expectedFinish.set(payload.expectedFinish);
-    local.values.timer.finishedAt.set(payload.finishedAt);
-    local.values.timer.playback.set(payload.playback);
-    local.values.timer.secondaryTimer.set(payload.secondaryTimer);
-    local.values.timer.startedAt.set(payload.startedAt);
+    var timer = local.values.mainTimer;
+
+    timer.addedTime.set(payload.addedTime);
+    timer.current.set(payload.current);
+    timer.duration.set(payload.duration);
+    timer.elapsed.set(payload.elapsed);
+    timer.expectedFinish.set(payload.expectedFinish);
+    timer.finishedAt.set(payload.finishedAt);
+    timer.playback.set(payload.playback);
+    timer.startedAt.set(payload.startedAt);
+  } else if (type == 'ontime-message') {
+    var messageTimer = local.values.message.timer;
+    var messageExternal = local.values.message.external;
+
+    messageTimer.text.set(payload.timer.text);
+    messageTimer.visible.set(payload.timer.visible);
+    messageTimer.blink.set(payload.timer.blink);
+    messageTimer.blackout.set(payload.timer.blackout);
+
+    messageExternal.text.set(payload.external.text);
+    messageExternal.visible.set(payload.external.visible);
+  } else if (type == 'ontime-runtime') {
+    var runtime = local.values.runtime;
+
+    runtime.selectedEventIndex.set(payload.selectedEventIndex);
+    runtime.numEvents.set(payload.numEvents);
+    runtime.offset.set(millisToString(payload.offset));
+    runtime.plannedStart.set(millisToString(payload.plannedStart));
+    runtime.plannedEnd.set(millisToString(payload.plannedEnd));
+    runtime.actualStart.set(millisToString(payload.actualStart));
+    runtime.expectedEnd.set(millisToString(payload.expectedEnd));
   } else if (type == 'ontime-eventNow') {
-    if (payload) {
-      local.values.eventNow.id.set(payload.id);
-      // local.values.eventNow.type.set(payload.type);
-      local.values.eventNow.title.set(payload.title);
-      local.values.eventNow.timeStart.set(payload.timeStart);
-      local.values.eventNow.timeEnd.set(payload.timeEnd);
-      local.values.eventNow.duration.set(payload.duration);
-      // local.values.eventNow.timeStrategy.set(payload.timeStrategy);
-      local.values.eventNow.linkStart.set(payload.linkStart);
-      local.values.eventNow.endAction.set(payload.endAction);
-      local.values.eventNow.timerType.set(payload.timerType);
-      local.values.eventNow.isPublic.set(payload.isPublic);
-      local.values.eventNow.skip.set(payload.skip);
-      local.values.eventNow.note.set(payload.note);
-      local.values.eventNow.colour.set(payload.colour);
-      local.values.eventNow.cue.set(payload.cue);
-      // local.values.eventNow.revision.set(payload.revision);
-      local.values.eventNow.timeWarning.set(payload.timeWarning);
-      local.values.eventNow.timeDanger.set(payload.timeDanger);
-      local.values.eventNow.delay.set(payload.delay);
-      // local.values.eventNow.custom.set(payload.custom);
-    } else {
-      script.log('No eventNow data');
-    } // Should this clear all values??
-  } else if (type == 'ontime-publicEventNow') {
-    local.values.publicEventNow.id.set(payload.id);
-    // local.values.publicEventNow.type.set(payload.type);
-    local.values.publicEventNow.title.set(payload.title);
-    local.values.publicEventNow.timeStart.set(payload.timeStart);
-    local.values.publicEventNow.timeEnd.set(payload.timeEnd);
-    local.values.publicEventNow.duration.set(payload.duration);
-    // local.values.publicEventNow.timeStrategy.set(payload.timeStrategy);
-    local.values.publicEventNow.linkStart.set(payload.linkStart);
-    local.values.publicEventNow.endAction.set(payload.endAction);
-    local.values.publicEventNow.timerType.set(payload.timerType);
-    local.values.publicEventNow.isPublic.set(payload.isPublic);
-    local.values.publicEventNow.skip.set(payload.skip);
-    local.values.publicEventNow.note.set(payload.note);
-    local.values.publicEventNow.colour.set(payload.colour);
-    local.values.publicEventNow.cue.set(payload.cue);
-    // local.values.publicEventNow.revision.set(payload.revision);
-    local.values.publicEventNow.timeWarning.set(payload.timeWarning);
-    local.values.publicEventNow.timeDanger.set(payload.timeDanger);
-    local.values.publicEventNow.delay.set(payload.delay);
-    // local.values.publicEventNow.custom.set(payload.custom);
+    var currentEvent = local.values.currentEvent;
+    setEventData(currentEvent, payload);
   } else if (type == 'ontime-eventNext') {
-    local.values.eventNext.id.set(payload.id);
-    // local.values.eventNext.type.set(payload.type);
-    local.values.eventNext.title.set(payload.title);
-    local.values.eventNext.timeStart.set(payload.timeStart);
-    local.values.eventNext.timeEnd.set(payload.timeEnd);
-    local.values.eventNext.duration.set(payload.duration);
-    // local.values.eventNext.timeStrategy.set(payload.timeStrategy);
-    local.values.eventNext.linkStart.set(payload.linkStart);
-    local.values.eventNext.endAction.set(payload.endAction);
-    local.values.eventNext.timerType.set(payload.timerType);
-    local.values.eventNext.isPublic.set(payload.isPublic);
-    local.values.eventNext.skip.set(payload.skip);
-    local.values.eventNext.note.set(payload.note);
-    local.values.eventNext.colour.set(payload.colour);
-    local.values.eventNext.cue.set(payload.cue);
-    // local.values.eventNext.revision.set(payload.revision);
-    local.values.eventNext.timeWarning.set(payload.timeWarning);
-    local.values.eventNext.timeDanger.set(payload.timeDanger);
-    local.values.eventNext.delay.set(payload.delay);
-    // local.values.eventNext.custom.set(payload.custom);
+    var nextEvent = local.values.nextEvent;
+    setEventData(nextEvent, payload);
+  } else if (type == 'ontime-publicEventNow') {
+    var currentPublicEvent = local.values.currentPublicEvent;
+    setEventData(currentPublicEvent, payload);
   } else if (type == 'ontime-publicEventNext') {
-    local.values.publicEventNext.id.set(payload.id);
-    // local.values.publicEventNext.type.set(payload.type);
-    local.values.publicEventNext.title.set(payload.title);
-    local.values.publicEventNext.timeStart.set(payload.timeStart);
-    local.values.publicEventNext.timeEnd.set(payload.timeEnd);
-    local.values.publicEventNext.duration.set(payload.duration);
-    // local.values.publicEventNext.timeStrategy.set(payload.timeStrategy);
-    local.values.publicEventNext.linkStart.set(payload.linkStart);
-    local.values.publicEventNext.endAction.set(payload.endAction);
-    local.values.publicEventNext.timerType.set(payload.timerType);
-    local.values.publicEventNext.isPublic.set(payload.isPublic);
-    local.values.publicEventNext.skip.set(payload.skip);
-    local.values.publicEventNext.note.set(payload.note);
-    local.values.publicEventNext.colour.set(payload.colour);
-    local.values.publicEventNext.cue.set(payload.cue);
-    // local.values.publicEventNext.revision.set(payload.revision);
-    local.values.publicEventNext.timeWarning.set(payload.timeWarning);
-    local.values.publicEventNext.timeDanger.set(payload.timeDanger);
-    local.values.publicEventNext.delay.set(payload.delay);
-    // local.values.publicEventNext.custom.set(payload.custom);
+    var nextPublicEvent = local.values.nextPublicEvent;
+    setEventData(nextPublicEvent, payload);
   } else if (type == 'ontime-log') {
+    //TODO: Is this useful?
     local.values.log.id.set(payload.id);
     local.values.log.level.set(payload.level);
     local.values.log.origin.set(payload.origin);
     local.values.log.text.set(payload.text);
     local.values.log.time.set(payload.time);
-  } else if (type == 'ontime-runtime') {
-    local.values.runtime.selectedEventIndex.set(payload.selectedEventIndex);
-    local.values.runtime.numEvents.set(payload.numEvents);
-    local.values.runtime.offset.set(payload.offset);
-    local.values.runtime.plannedStart.set(payload.plannedStart);
-    local.values.runtime.plannedEnd.set(payload.plannedEnd);
-    local.values.runtime.actualStart.set(payload.actualStart);
-    local.values.runtime.expectedEnd.set(payload.expectedEnd);
-  } else if (type == 'ontime-message') {
-    local.values.messageTimer.text.set(payload.timer.text);
-    local.values.messageTimer.visible.set(payload.timer.visible);
-    local.values.messageTimer.blink.set(payload.timer.blink);
-    local.values.messageTimer.blackout.set(payload.timer.blackout);
-    local.values.messageExternal.text.set(payload.external.text);
-    local.values.messageExternal.visible.set(payload.external.visible);
   } else if (type == 'ontime-refetch') {
-    script.log(' : ' + type + '\nPayload:' + JSON.stringify(payload));
+    script.log('refetch');
   } else if (type == 'ontime-auxtimer1') {
-    //local.values.auxtimer.duration.set(payload.duration);
-    //local.values.auxtimer.current.set(payload.current);
-    //local.values.auxtimer.playback.set(payload.playback);
-    //local.values.auxtimer.direction.set(payload.direction);
+    var auxTimer = local.values.auxTimer1;
+    auxTimer.duration.set(millisToString(payload.duration));
+    auxTimer.current.set(millisToString(payload.current));
+    auxTimer.playback.setData(payload.playback);
+    auxTimer.direction.setData(payload.direction);
   } else if (type == 'poll') {
-    //local.values.auxtimer.duration.set(payload.duration);
-    //local.values.auxtimer.current.set(payload.current);
-    //local.values.auxtimer.playback.set(payload.playback);
-    //local.values.auxtimer.direction.set(payload.direction);
+    script.log('poll');
   } else if (type == 'version') {
-    //local.values.version.set(payload);
   } else {
     script.log('type received: ' + type + '\nPayload:' + JSON.stringify(payload));
   }

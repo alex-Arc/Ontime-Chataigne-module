@@ -31,139 +31,84 @@
   "scripts": ["./Ontime.js"],
 
   "values": {
-    "clockmillis": { "type": "Integer", "readOnly": true },
-    "clock": { "type": "String", "readOnly": true },
+    "Clock": { "type": "String", "readOnly": true },
     "onAir": { "shortName": "onAir", "type": "Boolean", "readOnly": true },
-    "playback": {
-      "type": "Enum",
-      "options": {
-        "play": "play",
-        "stop": "stop",
-        "armed": "armed",
-        "paused": "pause",
-        "roll": "roll"
-      },
-      "readOnly": true
-    },
-    "messageTimer": {
+    "Main Timer": {
       "type": "Container",
       "collapsed": true,
-      "text": { "type": "String", "readOnly": true },
-      "visible": { "type": "Boolean", "readOnly": true },
-      "blink": { "type": "Boolean", "readOnly": true },
-      "blackout": { "type": "Boolean", "readOnly": true }
-    },
-    "messageExternal": {
-      "type": "Container",
-      "collapsed": true,
-      "text": { "type": "String", "readOnly": true },
-      "visible": { "type": "Boolean", "readOnly": true }
-    },
-    "runtime": {
-      "type": "Container",
-      "collapsed": true,
-      "selectedEventIndex": { "type": "Integer", "readOnly": true },
-      "numEvents": { "type": "Integer", "readOnly": true },
-      "offset": { "type": "Integer", "readOnly": true },
-      "plannedStart": { "type": "Integer", "readOnly": true },
-      "plannedEnd": { "type": "Integer", "readOnly": true },
-      "actualStart": { "type": "Integer", "readOnly": true },
-      "expectedEnd": { "type": "Integer", "readOnly": true }
-    },
-    "timer": {
-      "type": "Container",
-      "collapsed": true,
-      "addedTime": { "type": "Integer", "readOnly": true },
-      "current": { "type": "Integer", "readOnly": true },
-      "duration": { "type": "Integer", "readOnly": true },
-      "elapsed": { "type": "Integer", "readOnly": true },
-      "expectedFinish": { "type": "Integer", "readOnly": true },
-      "finishedAt": { "type": "Integer", "readOnly": true },
-      "playback": {
+      "Added Time": { "type": "Integer", "readOnly": true },
+      "Current": { "type": "Integer", "readOnly": true },
+      "Duration": { "type": "Integer", "readOnly": true },
+      "Elapsed": { "type": "Integer", "readOnly": true },
+      "Expected Finish": { "type": "Integer", "readOnly": true },
+      "Started At": { "type": "String", "readOnly": true },
+      "Finished At": { "type": "Integer", "readOnly": true },
+      "Playback": {
         "type": "Enum",
         "options": {
-          "play": "play",
-          "roll": "roll",
-          "pause": "pause",
-          "stop": "stop",
-          "armed": "armed"
+          "Play": "play",
+          "Roll": "roll",
+          "Pause": "pause",
+          "Stop": "stop",
+          "Armed": "armed"
         },
-        "readOnly": true
-      },
-      "secondaryTimer": { "type": "Integer", "readOnly": true },
-      "startedAt": { "type": "String", "readOnly": true }
-    },
-    "eventNow": {
-      "type": "Container",
-      "collapsed": false,
-      "id": { "type": "String", "readOnly": true },
-      "title": { "type": "String", "readOnly": true },
-      "cue": { "type": "String", "readOnly": true },
-      "colour": { "type": "String", "readOnly": true },
-      "note": { "type": "String", "readOnly": true },
-      "timeStart": { "type": "Integer", "readOnly": true },
-      "timeEnd": { "type": "Integer", "readOnly": true },
-      "duration": { "type": "Integer", "readOnly": true },
-      "delay": { "type": "Boolean", "readOnly": true },
-      "isPublic": { "type": "Boolean", "readOnly": true },
-      "skip": { "type": "Boolean", "readOnly": true },
-      "linkStart": { "type": "Boolean", "readOnly": true },
-      "timeDanger": { "type": "Integer", "readOnly": true },
-      "timeWarning": { "type": "Integer", "readOnly": true },
-      "endAction": {
-        "type": "Enum",
-        "options": {
-          "none": "none",
-          "stop": "stop",
-          "Load next": "load-next",
-          "Play next": "play-next"
-        },
-        "readOnly": true
-      },
-      "timerType": {
-        "type": "Enum",
-        "options": {
-          "Count down": "count-down",
-          "Count up": "count-up",
-          "Time to end": "time-to-end",
-          "Clock": "clock"
-        },
-        "readOnly": true
-      },
-      "eventType": {
-        "type": "Enum",
-        "options": { "Event": "event" },
         "readOnly": true
       }
     },
-    "eventNext": {
+    "Message": {
       "type": "Container",
-      "collapsed": false,
+      "Timer": {
+        "type": "Container",
+        "collapsed": true,
+        "Text": { "type": "String", "readOnly": true },
+        "Visible": { "type": "Boolean", "readOnly": true },
+        "Blink": { "type": "Boolean", "readOnly": true },
+        "Blackout": { "type": "Boolean", "readOnly": true }
+      },
+      "External": {
+        "type": "Container",
+        "collapsed": true,
+        "Text": { "type": "String", "readOnly": true },
+        "Visible": { "type": "Boolean", "readOnly": true }
+      }
+    },
+    "Runtime": {
+      "type": "Container",
+      "collapsed": true,
+      "Selected Event Index": { "type": "Integer", "readOnly": true },
+      "Num Events": { "type": "Integer", "readOnly": true },
+      "Offset": { "type": "String", "readOnly": true },
+      "Planned Start": { "type": "String", "readOnly": true },
+      "Planned End": { "type": "String", "readOnly": true },
+      "Actual Start": { "type": "String", "readOnly": true },
+      "Expected End": { "type": "String", "readOnly": true }
+    },
+    "Current Event": {
+      "type": "Container",
+      "collapsed": true,
       "id": { "type": "String", "readOnly": true },
-      "title": { "type": "String", "readOnly": true },
-      "cue": { "type": "String", "readOnly": true },
-      "colour": { "type": "String", "readOnly": true },
-      "note": { "type": "String", "readOnly": true },
-      "timeStart": { "type": "Integer", "readOnly": true },
-      "timeEnd": { "type": "Integer", "readOnly": true },
-      "duration": { "type": "Integer", "readOnly": true },
-      "delay": { "type": "Boolean", "readOnly": true },
-      "isPublic": { "type": "Boolean", "readOnly": true },
-      "skip": { "type": "Boolean", "readOnly": true },
-      "linkStart": { "type": "Boolean", "readOnly": true },
-      "timeDanger": { "type": "Integer", "readOnly": true },
-      "timeWarning": { "type": "Integer", "readOnly": true },
-      "endAction": {
+      "Title": { "type": "String", "readOnly": true },
+      "Cue": { "type": "String", "readOnly": true },
+      "Colour": { "type": "String", "readOnly": true },
+      "Note": { "type": "String", "readOnly": true },
+      "Start": { "type": "String", "readOnly": true },
+      "End": { "type": "String", "readOnly": true },
+      "Duration": { "type": "String", "readOnly": true },
+      "Public": { "type": "Boolean", "readOnly": true },
+      "Skip": { "type": "Boolean", "readOnly": true },
+      "Danger": { "type": "Integer", "readOnly": true },
+      "Warning": { "type": "Integer", "readOnly": true },
+      "End Action": {
         "type": "Enum",
         "options": {
-          "none": "none",
-          "stop": "stop",
+          "None": "none",
+          "Stop": "stop",
           "Load next": "load-next",
           "Play next": "play-next"
         },
         "readOnly": true
       },
-      "timerType": {
+      "Timer Type": {
         "type": "Enum",
         "options": {
           "Count down": "count-down",
@@ -171,42 +116,35 @@
           "Time to end": "time-to-end",
           "Clock": "clock"
         },
-        "readOnly": true
-      },
-      "eventType": {
-        "type": "Enum",
-        "options": { "Event": "event" },
         "readOnly": true
       }
     },
-    "publicEventNow": {
+    "Next Event": {
       "type": "Container",
-      "collapsed": false,
+      "collapsed": true,
       "id": { "type": "String", "readOnly": true },
-      "title": { "type": "String", "readOnly": true },
-      "cue": { "type": "String", "readOnly": true },
-      "colour": { "type": "String", "readOnly": true },
-      "note": { "type": "String", "readOnly": true },
-      "timeStart": { "type": "Integer", "readOnly": true },
-      "timeEnd": { "type": "Integer", "readOnly": true },
-      "duration": { "type": "Integer", "readOnly": true },
-      "delay": { "type": "Boolean", "readOnly": true },
-      "isPublic": { "type": "Boolean", "readOnly": true },
-      "skip": { "type": "Boolean", "readOnly": true },
-      "linkStart": { "type": "Boolean", "readOnly": true },
-      "timeDanger": { "type": "Integer", "readOnly": true },
-      "timeWarning": { "type": "Integer", "readOnly": true },
-      "endAction": {
+      "Title": { "type": "String", "readOnly": true },
+      "Cue": { "type": "String", "readOnly": true },
+      "Colour": { "type": "String", "readOnly": true },
+      "Note": { "type": "String", "readOnly": true },
+      "Start": { "type": "String", "readOnly": true },
+      "End": { "type": "String", "readOnly": true },
+      "Duration": { "type": "String", "readOnly": true },
+      "Public": { "type": "Boolean", "readOnly": true },
+      "Skip": { "type": "Boolean", "readOnly": true },
+      "Danger": { "type": "Integer", "readOnly": true },
+      "Warning": { "type": "Integer", "readOnly": true },
+      "End Action": {
         "type": "Enum",
         "options": {
-          "none": "none",
-          "stop": "stop",
+          "None": "none",
+          "Stop": "stop",
           "Load next": "load-next",
           "Play next": "play-next"
         },
         "readOnly": true
       },
-      "timerType": {
+      "Timer Type": {
         "type": "Enum",
         "options": {
           "Count down": "count-down",
@@ -214,42 +152,35 @@
           "Time to end": "time-to-end",
           "Clock": "clock"
         },
-        "readOnly": true
-      },
-      "eventType": {
-        "type": "Enum",
-        "options": { "Event": "event" },
         "readOnly": true
       }
     },
-    "publicEventNext": {
+    "Current Public Event": {
       "type": "Container",
-      "collapsed": false,
+      "collapsed": true,
       "id": { "type": "String", "readOnly": true },
-      "title": { "type": "String", "readOnly": true },
-      "cue": { "type": "String", "readOnly": true },
-      "colour": { "type": "String", "readOnly": true },
-      "note": { "type": "String", "readOnly": true },
-      "timeStart": { "type": "Integer", "readOnly": true },
-      "timeEnd": { "type": "Integer", "readOnly": true },
-      "duration": { "type": "Integer", "readOnly": true },
-      "delay": { "type": "Boolean", "readOnly": true },
-      "isPublic": { "type": "Boolean", "readOnly": true },
-      "skip": { "type": "Boolean", "readOnly": true },
-      "linkStart": { "type": "Boolean", "readOnly": true },
-      "timeDanger": { "type": "Integer", "readOnly": true },
-      "timeWarning": { "type": "Integer", "readOnly": true },
-      "endAction": {
+      "Title": { "type": "String", "readOnly": true },
+      "Cue": { "type": "String", "readOnly": true },
+      "Colour": { "type": "String", "readOnly": true },
+      "Note": { "type": "String", "readOnly": true },
+      "Start": { "type": "String", "readOnly": true },
+      "End": { "type": "String", "readOnly": true },
+      "Duration": { "type": "String", "readOnly": true },
+      "Public": { "type": "Boolean", "readOnly": true },
+      "Skip": { "type": "Boolean", "readOnly": true },
+      "Danger": { "type": "Integer", "readOnly": true },
+      "Warning": { "type": "Integer", "readOnly": true },
+      "End Action": {
         "type": "Enum",
         "options": {
-          "none": "none",
-          "stop": "stop",
+          "None": "none",
+          "Stop": "stop",
           "Load next": "load-next",
           "Play next": "play-next"
         },
         "readOnly": true
       },
-      "timerType": {
+      "Timer Type": {
         "type": "Enum",
         "options": {
           "Count down": "count-down",
@@ -258,28 +189,75 @@
           "Clock": "clock"
         },
         "readOnly": true
-      },
-      "eventType": {
+      }
+    },
+    "Next Public Event": {
+      "type": "Container",
+      "collapsed": true,
+      "id": { "type": "String", "readOnly": true },
+      "Title": { "type": "String", "readOnly": true },
+      "Cue": { "type": "String", "readOnly": true },
+      "Colour": { "type": "String", "readOnly": true },
+      "Note": { "type": "String", "readOnly": true },
+      "Start": { "type": "String", "readOnly": true },
+      "End": { "type": "String", "readOnly": true },
+      "Duration": { "type": "String", "readOnly": true },
+      "Public": { "type": "Boolean", "readOnly": true },
+      "Skip": { "type": "Boolean", "readOnly": true },
+      "Danger": { "type": "Integer", "readOnly": true },
+      "Warning": { "type": "Integer", "readOnly": true },
+      "End Action": {
         "type": "Enum",
-        "options": { "Event": "event" },
+        "options": {
+          "None": "none",
+          "Stop": "stop",
+          "Load next": "load-next",
+          "Play next": "play-next"
+        },
+        "readOnly": true
+      },
+      "Timer Type": {
+        "type": "Enum",
+        "options": {
+          "Count down": "count-down",
+          "Count up": "count-up",
+          "Time to end": "time-to-end",
+          "Clock": "clock"
+        },
         "readOnly": true
       }
     },
     "log": {
       "type": "Container",
-      "collapsed": false,
+      "collapsed": true,
       "id": { "type": "String", "readOnly": true },
       "level": { "type": "String", "readOnly": true },
       "origin": { "type": "String", "readOnly": true },
       "text": { "type": "String", "readOnly": true },
       "time": { "type": "String", "readOnly": true }
     },
-    "Aux timer": {
+    "Aux Timer 1": {
       "type": "Container",
+      "collapsed": true,
       "Duration": { "type": "String", "readOnly": true },
       "Current": { "type": "String", "readOnly": true },
-      "Playback": { "type": "String", "readOnly": true },
-      "Direction": { "type": "String", "readOnly": true }
+      "Playback": {
+        "type": "Enum",
+        "options": {
+          "Start": "start",
+          "Pause": "pause",
+          "Stop": "stop"
+        },
+        "readOnly": true
+      },
+      "Direction": {
+        "type": "Enum",
+        "options": {
+          "Count down": "count-down",
+          "Count up": "count-up"
+        },
+        "readOnly": true
+      }
     }
   },
 
