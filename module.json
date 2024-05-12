@@ -3,7 +3,7 @@
   "type": "WebSocket Client",
   "path": "Software",
 
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "Module for interacting with ontime",
   "url": "https://github.com/alex-Arc/Ontime-Chataigne-module",
   "downloadURL": "",
@@ -21,31 +21,37 @@
   },
 
   "parameters": {
-    "External message": {
-      "type": "String"
+    "Ontime version": {
+      "type": "String",
+      "readOnly": true
+    },
+    "Client name": {
+      "type": "String",
+      "readOnly": true
     }
   },
 
-  "hideDefaultParameters": ["autoAdd", "protocol", "messageStructure", "firstValueIsTheName", "useSecureConnection"],
+  "hideDefaultParameters": ["autoAdd", "protocol", "messageStructure", "firstValueIsTheName", "useSecureConnection", "customSeparator"],
 
   "scripts": ["./Ontime.js"],
 
   "values": {
-    "Clock": { "type": "String", "readOnly": true },
+    "Clock": { "type": "Float", "ui":"time", "readOnly": true },
     "onAir": { "shortName": "onAir", "type": "Boolean", "readOnly": true },
     "Main Timer": {
       "type": "Container",
       "collapsed": true,
-      "Added Time": { "type": "Integer", "readOnly": true },
-      "Current": { "type": "Integer", "readOnly": true },
-      "Duration": { "type": "Integer", "readOnly": true },
-      "Elapsed": { "type": "Integer", "readOnly": true },
-      "Expected Finish": { "type": "Integer", "readOnly": true },
-      "Started At": { "type": "String", "readOnly": true },
-      "Finished At": { "type": "Integer", "readOnly": true },
+      "Added Time": { "type": "Float", "ui":"time", "readOnly": true },
+      "Current": { "type": "Float", "ui":"time", "readOnly": true },
+      "Duration": { "type": "Float", "ui":"time", "readOnly": true },
+      "Elapsed": { "type": "Float", "ui":"time", "readOnly": true },
+      "Expected Finish": { "type": "Float", "ui":"time", "readOnly": true },
+      "Started At": { "type": "Float", "ui":"time", "readOnly": true },
+      "Finished At": { "type": "Float", "ui":"time", "readOnly": true },
       "Playback": {
         "type": "Enum",
         "options": {
+          "-inactive-":"",
           "Play": "play",
           "Roll": "roll",
           "Pause": "pause",
@@ -75,13 +81,13 @@
     "Runtime": {
       "type": "Container",
       "collapsed": true,
-      "Selected Event Index": { "type": "Integer", "readOnly": true },
-      "Num Events": { "type": "Integer", "readOnly": true },
-      "Offset": { "type": "String", "readOnly": true },
-      "Planned Start": { "type": "String", "readOnly": true },
-      "Planned End": { "type": "String", "readOnly": true },
-      "Actual Start": { "type": "String", "readOnly": true },
-      "Expected End": { "type": "String", "readOnly": true }
+      "Active Event Index": { "type": "Integer", "readOnly": true },
+      "Num Events": { "type": "Integer", "readOnly": true, "description":"All events, excluding skipped" },
+      "Offset": { "type": "Float", "ui":"time", "readOnly": true },
+      "Planned Start": { "type": "Float", "ui":"time", "readOnly": true },
+      "Planned End": { "type": "Float", "ui":"time", "readOnly": true },
+      "Actual Start": { "type": "Float", "ui":"time", "readOnly": true },
+      "Expected End": { "type": "Float", "ui":"time", "readOnly": true }
     },
     "Current Event": {
       "type": "Container",
@@ -91,16 +97,17 @@
       "Cue": { "type": "String", "readOnly": true },
       "Colour": { "type": "String", "readOnly": true },
       "Note": { "type": "String", "readOnly": true },
-      "Start": { "type": "String", "readOnly": true },
-      "End": { "type": "String", "readOnly": true },
-      "Duration": { "type": "String", "readOnly": true },
+      "Start": { "type": "Float", "ui":"time", "readOnly": true },
+      "End": { "type": "Float", "ui":"time", "readOnly": true },
+      "Duration": { "type": "Float", "ui":"time", "readOnly": true },
       "Public": { "type": "Boolean", "readOnly": true },
       "Skip": { "type": "Boolean", "readOnly": true },
-      "Danger": { "type": "Integer", "readOnly": true },
-      "Warning": { "type": "Integer", "readOnly": true },
+      "Danger": { "type": "Float", "ui":"time", "readOnly": true },
+      "Warning": { "type": "Float", "ui":"time", "readOnly": true },
       "End Action": {
         "type": "Enum",
         "options": {
+          " ":"",
           "None": "none",
           "Stop": "stop",
           "Load next": "load-next",
@@ -111,6 +118,7 @@
       "Timer Type": {
         "type": "Enum",
         "options": {
+          " ":"",
           "Count down": "count-down",
           "Count up": "count-up",
           "Time to end": "time-to-end",
@@ -127,16 +135,17 @@
       "Cue": { "type": "String", "readOnly": true },
       "Colour": { "type": "String", "readOnly": true },
       "Note": { "type": "String", "readOnly": true },
-      "Start": { "type": "String", "readOnly": true },
-      "End": { "type": "String", "readOnly": true },
-      "Duration": { "type": "String", "readOnly": true },
+      "Start": { "type": "Float", "ui":"time", "readOnly": true },
+      "End": { "type": "Float", "ui":"time", "readOnly": true },
+      "Duration": { "type": "Float", "ui":"time", "readOnly": true },
       "Public": { "type": "Boolean", "readOnly": true },
       "Skip": { "type": "Boolean", "readOnly": true },
-      "Danger": { "type": "Integer", "readOnly": true },
-      "Warning": { "type": "Integer", "readOnly": true },
+      "Danger": { "type": "Float", "ui":"time", "readOnly": true },
+      "Warning": { "type": "Float", "ui":"time", "readOnly": true },
       "End Action": {
         "type": "Enum",
         "options": {
+          " ":"",
           "None": "none",
           "Stop": "stop",
           "Load next": "load-next",
@@ -147,6 +156,7 @@
       "Timer Type": {
         "type": "Enum",
         "options": {
+          " ":"",
           "Count down": "count-down",
           "Count up": "count-up",
           "Time to end": "time-to-end",
@@ -163,16 +173,17 @@
       "Cue": { "type": "String", "readOnly": true },
       "Colour": { "type": "String", "readOnly": true },
       "Note": { "type": "String", "readOnly": true },
-      "Start": { "type": "String", "readOnly": true },
-      "End": { "type": "String", "readOnly": true },
-      "Duration": { "type": "String", "readOnly": true },
+      "Start": { "type": "Float", "ui":"time", "readOnly": true },
+      "End": { "type": "Float", "ui":"time", "readOnly": true },
+      "Duration": { "type": "Float", "ui":"time", "readOnly": true },
       "Public": { "type": "Boolean", "readOnly": true },
       "Skip": { "type": "Boolean", "readOnly": true },
-      "Danger": { "type": "Integer", "readOnly": true },
-      "Warning": { "type": "Integer", "readOnly": true },
+      "Danger": { "type": "Float", "ui":"time", "readOnly": true },
+      "Warning": { "type": "Float", "ui":"time", "readOnly": true },
       "End Action": {
         "type": "Enum",
         "options": {
+          " ":"",
           "None": "none",
           "Stop": "stop",
           "Load next": "load-next",
@@ -183,6 +194,7 @@
       "Timer Type": {
         "type": "Enum",
         "options": {
+          " ":"",
           "Count down": "count-down",
           "Count up": "count-up",
           "Time to end": "time-to-end",
@@ -199,16 +211,17 @@
       "Cue": { "type": "String", "readOnly": true },
       "Colour": { "type": "String", "readOnly": true },
       "Note": { "type": "String", "readOnly": true },
-      "Start": { "type": "String", "readOnly": true },
-      "End": { "type": "String", "readOnly": true },
-      "Duration": { "type": "String", "readOnly": true },
+      "Start": { "type": "Float", "ui":"time", "readOnly": true },
+      "End": { "type": "Float", "ui":"time", "readOnly": true },
+      "Duration": { "type": "Float", "ui":"time", "readOnly": true },
       "Public": { "type": "Boolean", "readOnly": true },
       "Skip": { "type": "Boolean", "readOnly": true },
-      "Danger": { "type": "Integer", "readOnly": true },
-      "Warning": { "type": "Integer", "readOnly": true },
+      "Danger": { "type": "Float", "ui":"time", "readOnly": true },
+      "Warning": { "type": "Float", "ui":"time", "readOnly": true },
       "End Action": {
         "type": "Enum",
         "options": {
+          " ":"",
           "None": "none",
           "Stop": "stop",
           "Load next": "load-next",
@@ -219,6 +232,7 @@
       "Timer Type": {
         "type": "Enum",
         "options": {
+          " ":"",
           "Count down": "count-down",
           "Count up": "count-up",
           "Time to end": "time-to-end",
@@ -239,11 +253,12 @@
     "Aux Timer 1": {
       "type": "Container",
       "collapsed": true,
-      "Duration": { "type": "String", "readOnly": true },
-      "Current": { "type": "String", "readOnly": true },
+      "Duration": { "type": "Float","ui":"time", "readOnly": true },
+      "Current": { "type": "Float","ui":"time", "readOnly": true },
       "Playback": {
         "type": "Enum",
         "options": {
+          "-inactive-":"",
           "Start": "start",
           "Pause": "pause",
           "Stop": "stop"
@@ -262,32 +277,6 @@
   },
 
   "commands": {
-    "Event action": {
-      "callback": "eventAction",
-      "parameters": {
-        "Target type": {
-          "type": "Enum",
-          "options": {
-            "Target ID": "id",
-            "Target cue name": "cue",
-            "Target list index": "index"
-          },
-          "description": "Unique ID, cue name, list number"
-        },
-        "Target identifier": {
-          "type": "String",
-          "description": "Type in target identifier"
-        },
-        "Target action": {
-          "type": "Enum",
-          "options": {
-            "Start": "start",
-            "Load": "load"
-          },
-          "description": "Select action to preform"
-        }
-      }
-    },
     "General action": {
       "callback": "generalAction",
       "parameters": {
@@ -320,6 +309,32 @@
             "check": "equals",
             "action": "show"
           }
+        }
+      }
+    },
+    "Event action": {
+      "callback": "eventAction",
+      "parameters": {
+        "Target type": {
+          "type": "Enum",
+          "options": {
+            "Target ID": "id",
+            "Target cue name": "cue",
+            "Target list index": "index"
+          },
+          "description": "Unique ID, cue name, list number"
+        },
+        "Target identifier": {
+          "type": "String",
+          "description": "Type in target identifier"
+        },
+        "Target action": {
+          "type": "Enum",
+          "options": {
+            "Start": "start",
+            "Load": "load"
+          },
+          "description": "Select action to preform"
         }
       }
     },

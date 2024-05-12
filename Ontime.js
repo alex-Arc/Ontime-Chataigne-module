@@ -1,6 +1,19 @@
 function init() {}
 
-function moduleParameterChanged(param) {}
+function moduleParameterChanged(param) {
+  // TODO: check version upon connection?
+  if (param.name == "connected") {
+    script.log("isConnected:"+ param.get());
+    if (param.get()){
+      local.send("{\"type\":\"version\"}");
+    } else {
+      local.parameters.version.set("- not connected -");
+    }
+  } else {
+    script.log("Parameter:" + param.name + " : " + param.get());
+  }
+  // else { local.values.version.set("- not connected -")}; */
+}
 
 function moduleValueChanged(value) {
   // script.log("moduleValueChanged: " + value);
@@ -29,28 +42,37 @@ function millisToString(millis) {
 
   return isNegative + hour + ':' + min + ':' + sec;
 }
+/**
+ *
+ * @param {number} millis
+ * @returns {float}
+ */
+function millisToFloat(millis) {
+  if(millis){
+    var sec = millis / 1000;
+    return Math.round(sec);
+  } else { return 0; }
+}
 
 function setEventData(eventObject, payload) {
-  if (payload) {
-    eventObject.id.set(payload.id);
-    eventObject.title.set(payload.title);
-    eventObject.start.set(millisToString(payload.timeStart));
-    eventObject.end.set(millisToString(payload.timeEnd));
-    eventObject.duration.set(millisToString(payload.duration));
-    eventObject.endAction.setData(payload.endAction);
-    eventObject.timerType.setData(payload.timerType);
-    eventObject.public.set(payload.isPublic);
-    eventObject.skip.set(payload.skip);
-    eventObject.note.set(payload.note);
-    //TODO: Colour conversion
-    eventObject.colour.set(payload.colour);
-    eventObject.cue.set(payload.cue);
-    eventObject.warning.set(payload.timeWarning);
-    eventObject.danger.set(payload.timeDanger);
-    //TODO: add custom data
-  } else {
-    script.log('No eventNow data');
-  } //TODO: Should this clear all values??
+  // checking for the specific value results in null, must check against payload
+  eventObject.id.set(!!payload.id ? payload.id : "");
+  //eventObject.title.set(payload ? payload.title : "");
+  eventObject.title.set(!!payload.title ? payload.title : "");
+  eventObject.start.set(millisToFloat(payload.timeStart));
+  eventObject.end.set(millisToFloat(payload.timeEnd));
+  eventObject.duration.set(millisToFloat(payload.duration));
+  eventObject.endAction.setData(payload ? payload.endAction : "");
+  eventObject.timerType.setData(payload ? payload.timerType : "");
+  eventObject.public.set(payload.isPublic ? payload.isPublic : false);
+  eventObject.skip.set(payload.skip ? payload.skip : false);
+  eventObject.note.set(!!payload.note ? payload.note : "");
+  //TODO: Colour conversion
+  eventObject.colour.set(!!payload.colour ? payload.colour : "");
+  eventObject.cue.set(payload.cue ? payload.cue : "");
+  eventObject.warning.set(millisToFloat(payload.timeWarning));
+  eventObject.danger.set(millisToFloat(payload.timeDanger));
+  //TODO: add custom data
 }
 
 function wsMessageReceived(message) {
@@ -60,20 +82,20 @@ function wsMessageReceived(message) {
 
   if (type == 'ontime') {
   } else if (type == 'ontime-clock') {
-    local.values.clock.set(millisToString(payload));
+    local.values.clock.set(millisToFloat(payload));
   } else if (type == 'ontime-onAir') {
     local.values.onAir.set(payload);
   } else if (type == 'ontime-timer') {
     var timer = local.values.mainTimer;
 
-    timer.addedTime.set(payload.addedTime);
-    timer.current.set(payload.current);
-    timer.duration.set(payload.duration);
-    timer.elapsed.set(payload.elapsed);
-    timer.expectedFinish.set(payload.expectedFinish);
-    timer.finishedAt.set(payload.finishedAt);
-    timer.playback.set(payload.playback);
-    timer.startedAt.set(payload.startedAt);
+    timer.addedTime.set(millisToFloat(payload.addedTime));
+    timer.current.set(millisToFloat(payload.current));
+    timer.duration.set(millisToFloat(payload.duration));
+    timer.elapsed.set(millisToFloat(payload.elapsed));
+    timer.expectedFinish.set(millisToFloat(payload.expectedFinish));
+    timer.finishedAt.set(millisToFloat(payload.finishedAt));
+    timer.playback.setData(payload.playback);
+    timer.startedAt.set(millisToFloat(payload.startedAt));
   } else if (type == 'ontime-message') {
     var messageTimer = local.values.message.timer;
     var messageExternal = local.values.message.external;
@@ -88,13 +110,13 @@ function wsMessageReceived(message) {
   } else if (type == 'ontime-runtime') {
     var runtime = local.values.runtime;
 
-    runtime.selectedEventIndex.set(payload.selectedEventIndex);
+    runtime.activeEventIndex.set((payload.selectedEventIndex >= 0) ? payload.selectedEventIndex + 1 : -1); // Off by 1, starts at 0, -1 when inactive
     runtime.numEvents.set(payload.numEvents);
-    runtime.offset.set(millisToString(payload.offset));
-    runtime.plannedStart.set(millisToString(payload.plannedStart));
-    runtime.plannedEnd.set(millisToString(payload.plannedEnd));
-    runtime.actualStart.set(millisToString(payload.actualStart));
-    runtime.expectedEnd.set(millisToString(payload.expectedEnd));
+    runtime.offset.set(millisToFloat(payload.offset));
+    runtime.plannedStart.set(millisToFloat(payload.plannedStart));
+    runtime.plannedEnd.set(millisToFloat(payload.plannedEnd));
+    runtime.actualStart.set(millisToFloat(payload.actualStart));
+    runtime.expectedEnd.set(millisToFloat(payload.expectedEnd));
   } else if (type == 'ontime-eventNow') {
     var currentEvent = local.values.currentEvent;
     setEventData(currentEvent, payload);
@@ -117,14 +139,18 @@ function wsMessageReceived(message) {
   } else if (type == 'ontime-refetch') {
     script.log('refetch');
   } else if (type == 'ontime-auxtimer1') {
+    // TODO: ability to label aux timers and prepare to have more than one?
     var auxTimer = local.values.auxTimer1;
-    auxTimer.duration.set(millisToString(payload.duration));
-    auxTimer.current.set(millisToString(payload.current));
-    auxTimer.playback.setData(payload.playback);
+    auxTimer.duration.set(millisToFloat(payload.duration));
+    auxTimer.current.set(millisToFloat(payload.current));
+    auxTimer.playback.setData(payload ? payload.playback : "");
     auxTimer.direction.setData(payload.direction);
   } else if (type == 'poll') {
     script.log('poll');
   } else if (type == 'version') {
+    local.parameters.version.set(payload);
+  } else if (type == 'client-name') {
+    local.parameters.clientName.set(payload);
   } else {
     script.log('type received: ' + type + '\nPayload:' + JSON.stringify(payload));
   }
