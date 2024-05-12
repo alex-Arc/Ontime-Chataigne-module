@@ -1,4 +1,6 @@
-function init() {}
+function init() {
+  local.send('{"type":"version"}');
+}
 
 function moduleParameterChanged(param) {
   // TODO: check version upon connection?
@@ -148,7 +150,7 @@ function wsMessageReceived(message) {
   } else if (type == 'poll') {
     script.log('poll');
   } else if (type == 'version') {
-    local.parameters.version.set(payload);
+    local.parameters.ontimeVersion.set(payload);
   } else if (type == 'client-name') {
     local.parameters.clientName.set(payload);
   } else {
