@@ -1,6 +1,19 @@
 function init() {}
 
-function moduleParameterChanged(param) {}
+function moduleParameterChanged(param) {
+  // TODO: check version upon connection?
+  if (param.name == 'connected') {
+    script.log('isConnected:' + param.get());
+    if (param.get()) {
+      local.send('{"type":"version"}');
+    } else {
+      local.parameters.version.set('- not connected -');
+    }
+  } else {
+    script.log('Parameter:' + param.name + ' : ' + param.get());
+  }
+  // else { local.values.version.set("- not connected -")}; */
+}
 
 function moduleValueChanged(value) {
   // script.log("moduleValueChanged: " + value);
@@ -16,6 +29,15 @@ function pad(val) {
 }
 
 /**
+ * implement trunc spec (https://tc39.es/ecma262/multipage/numbers-and-dates.html#sec-math.trunc)
+ * @param {number} val
+ * @returns {number}
+ */
+function trunc(val) {
+  return val > 0 ? Math.floor(val) : Math.ceil(val);
+}
+
+/**
  *
  * @param {number} millis
  * @returns {string}
@@ -28,6 +50,19 @@ function millisToString(millis) {
   var hour = pad(parseInt(millis / (1000 * 60 * 60)) % 60);
 
   return isNegative + hour + ':' + min + ':' + sec;
+}
+/**
+ *
+ * @param {number} millis
+ * @returns {float}
+ */
+function millisToFloat(millis) {
+  if (millis) {
+    var sec = millis / 1000;
+    return trunc(sec);
+  } else {
+    return 0;
+  }
 }
 
 function setEventData(eventObject, payload) {
@@ -51,6 +86,24 @@ function setEventData(eventObject, payload) {
   } else {
     script.log('No eventNow data');
   } //TODO: Should this clear all values??
+  // checking for the specific value results in null, must check against payload
+  eventObject.id.set(!!payload.id ? payload.id : '');
+  //eventObject.title.set(payload ? payload.title : "");
+  eventObject.title.set(!!payload.title ? payload.title : '');
+  eventObject.start.set(millisToFloat(payload.timeStart));
+  eventObject.end.set(millisToFloat(payload.timeEnd));
+  eventObject.duration.set(millisToFloat(payload.duration));
+  eventObject.endAction.setData(payload ? payload.endAction : '');
+  eventObject.timerType.setData(payload ? payload.timerType : '');
+  eventObject.public.set(payload.isPublic ? payload.isPublic : false);
+  eventObject.skip.set(payload.skip ? payload.skip : false);
+  eventObject.note.set(!!payload.note ? payload.note : '');
+  //TODO: Colour conversion
+  eventObject.colour.set(!!payload.colour ? payload.colour : '');
+  eventObject.cue.set(payload.cue ? payload.cue : '');
+  eventObject.warning.set(millisToFloat(payload.timeWarning));
+  eventObject.danger.set(millisToFloat(payload.timeDanger));
+  //TODO: add custom data
 }
 
 function wsMessageReceived(message) {
@@ -88,7 +141,7 @@ function wsMessageReceived(message) {
   } else if (type == 'ontime-runtime') {
     var runtime = local.values.runtime;
 
-    runtime.selectedEventIndex.set(payload.selectedEventIndex);
+    runtime.activeEventIndex.set(payload.selectedEventIndex >= 0 ? payload.selectedEventIndex + 1 : -1); // Off by 1, starts at 0, -1 when inactive
     runtime.numEvents.set(payload.numEvents);
     runtime.offset.set(millisToString(payload.offset));
     runtime.plannedStart.set(millisToString(payload.plannedStart));
@@ -118,9 +171,9 @@ function wsMessageReceived(message) {
     script.log('refetch');
   } else if (type == 'ontime-auxtimer1') {
     var auxTimer = local.values.auxTimer1;
-    auxTimer.duration.set(millisToString(payload.duration));
-    auxTimer.current.set(millisToString(payload.current));
-    auxTimer.playback.setData(payload.playback);
+    auxTimer.duration.set(millisToFloat(payload.duration));
+    auxTimer.current.set(millisToFloat(payload.current));
+    auxTimer.playback.setData(payload ? payload.playback : '');
     auxTimer.direction.setData(payload.direction);
   } else if (type == 'poll') {
     script.log('poll');
