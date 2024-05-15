@@ -10,6 +10,7 @@ function moduleParameterChanged(param) {
       local.send('{"type":"version"}');
     } else {
       local.parameters.version.set('- not connected -');
+      local.parameters.clientName.set("- not connected -");
     }
   } else {
     script.log('Parameter:' + param.name + ' : ' + param.get());
@@ -61,7 +62,11 @@ function millisToString(millis) {
 function millisToFloat(millis) {
   if (millis) {
     var sec = millis / 1000;
-    return trunc(sec);
+    if (local.parameters.increasedPrecision.get() == false) {
+      return trunc(sec);
+    } else {
+      return sec;
+    }
   } else {
     return 0;
   }
@@ -140,7 +145,7 @@ function wsMessageReceived(message) {
   } else if (type == 'ontime-runtime') {
     var runtime = local.values.runtime;
 
-    runtime.selectedEventIndex.set(payload.selectedEventIndex === null ? 0 : payload.selectedEventIndex + 1); // Off by 1, starts at 0, -1 when inactive
+    runtime.activeEventIndex.set(payload.selectedEventIndex === null ? 0 : payload.selectedEventIndex + 1); // Off by 1, 0 when inactive
     runtime.numEvents.set(payload.numEvents);
     runtime.offset.set(millisToFloat(payload.offset));
     runtime.plannedStart.set(millisToFloat(payload.plannedStart));

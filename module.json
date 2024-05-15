@@ -21,6 +21,11 @@
   },
 
   "parameters": {
+    "Increased precision": {
+      "type": "Boolean",
+      "default": false,
+      "description": "If you need higher precision. This includes milliseconds, otherwise it's rounded to the nearest second"
+    },
     "Ontime version": {
       "type": "String",
       "readOnly": true
