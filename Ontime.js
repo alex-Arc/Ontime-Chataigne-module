@@ -138,7 +138,7 @@ function wsMessageReceived(message) {
   } else if (type == 'ontime-runtime') {
     var runtime = local.values.runtime;
 
-    runtime.activeEventIndex.set(payload.selectedEventIndex >= 0 ? payload.selectedEventIndex + 1 : -1); // Off by 1, starts at 0, -1 when inactive
+    runtime.selectedEventIndex.set(payload.selectedEventIndex === null ? 0 : payload.selectedEventIndex + 1); // Off by 1, starts at 0, -1 when inactive
     runtime.numEvents.set(payload.numEvents);
     runtime.offset.set(millisToString(payload.offset));
     runtime.plannedStart.set(millisToString(payload.plannedStart));
