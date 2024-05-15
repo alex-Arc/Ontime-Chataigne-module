@@ -227,15 +227,6 @@
         "readOnly": true
       }
     },
-    "log": {
-      "type": "Container",
-      "collapsed": true,
-      "id": { "type": "String", "readOnly": true },
-      "level": { "type": "String", "readOnly": true },
-      "origin": { "type": "String", "readOnly": true },
-      "text": { "type": "String", "readOnly": true },
-      "time": { "type": "String", "readOnly": true }
-    },
     "Aux Timer 1": {
       "type": "Container",
       "collapsed": true,

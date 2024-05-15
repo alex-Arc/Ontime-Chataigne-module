@@ -1,6 +1,19 @@
 function init() {}
 
-function moduleParameterChanged(param) {}
+function moduleParameterChanged(param) {
+  // TODO: check version upon connection?
+  if (param.name == 'connected') {
+    script.log('isConnected:' + param.get());
+    if (param.get()) {
+      local.send('{"type":"version"}');
+    } else {
+      local.parameters.version.set('- not connected -');
+    }
+  } else {
+    script.log('Parameter:' + param.name + ' : ' + param.get());
+  }
+  // else { local.values.version.set("- not connected -")}; */
+}
 
 function moduleValueChanged(value) {
   // script.log("moduleValueChanged: " + value);
@@ -13,6 +26,15 @@ function moduleValueChanged(value) {
  */
 function pad(val) {
   return val > 9 ? '' + val : '0' + val;
+}
+
+/**
+ * implement trunc spec (https://tc39.es/ecma262/multipage/numbers-and-dates.html#sec-math.trunc)
+ * @param {number} val
+ * @returns {number}
+ */
+function trunc(val) {
+  return val > 0 ? Math.floor(val) : Math.ceil(val);
 }
 
 /**
@@ -29,14 +51,27 @@ function millisToString(millis) {
 
   return isNegative + hour + ':' + min + ':' + sec;
 }
+/**
+ *
+ * @param {number} millis
+ * @returns {float}
+ */
+function millisToFloat(millis) {
+  if (millis) {
+    var sec = millis / 1000;
+    return trunc(sec);
+  } else {
+    return 0;
+  }
+}
 
 function setEventData(eventObject, payload) {
   if (payload) {
     eventObject.id.set(payload.id);
     eventObject.title.set(payload.title);
-    eventObject.start.set(millisToString(payload.timeStart));
-    eventObject.end.set(millisToString(payload.timeEnd));
-    eventObject.duration.set(millisToString(payload.duration));
+    eventObject.start.set(millisToFloat(payload.timeStart));
+    eventObject.end.set(millisToFloat(payload.timeEnd));
+    eventObject.duration.set(millisToFloat(payload.duration));
     eventObject.endAction.setData(payload.endAction);
     eventObject.timerType.setData(payload.timerType);
     eventObject.public.set(payload.isPublic);
@@ -45,12 +80,27 @@ function setEventData(eventObject, payload) {
     //TODO: Colour conversion
     eventObject.colour.set(payload.colour);
     eventObject.cue.set(payload.cue);
-    eventObject.warning.set(payload.timeWarning);
-    eventObject.danger.set(payload.timeDanger);
+    eventObject.warning.set(millisToFloat(payload.timeWarning));
+    eventObject.danger.set(millisToFloat(payload.timeDanger));
     //TODO: add custom data
   } else {
-    script.log('No eventNow data');
-  } //TODO: Should this clear all values??
+    eventObject.id.set('');
+    eventObject.title.set('');
+    eventObject.start.set(0);
+    eventObject.end.set(0);
+    eventObject.duration.set(0);
+    eventObject.endAction.setData('');
+    eventObject.timerType.setData('');
+    eventObject.public.set(false);
+    eventObject.skip.set(false);
+    eventObject.note.set('');
+    //TODO: Colour conversion
+    eventObject.colour.set('');
+    eventObject.cue.set('');
+    eventObject.warning.set(0);
+    eventObject.danger.set(0);
+    //TODO: add custom data
+  }
 }
 
 function wsMessageReceived(message) {
@@ -88,7 +138,7 @@ function wsMessageReceived(message) {
   } else if (type == 'ontime-runtime') {
     var runtime = local.values.runtime;
 
-    runtime.selectedEventIndex.set(payload.selectedEventIndex);
+    runtime.selectedEventIndex.set(payload.selectedEventIndex === null ? 0 : payload.selectedEventIndex + 1); // Off by 1, starts at 0, -1 when inactive
     runtime.numEvents.set(payload.numEvents);
     runtime.offset.set(millisToString(payload.offset));
     runtime.plannedStart.set(millisToString(payload.plannedStart));
@@ -107,24 +157,21 @@ function wsMessageReceived(message) {
   } else if (type == 'ontime-publicEventNext') {
     var nextPublicEvent = local.values.nextPublicEvent;
     setEventData(nextPublicEvent, payload);
-  } else if (type == 'ontime-log') {
-    //TODO: Is this useful?
-    local.values.log.id.set(payload.id);
-    local.values.log.level.set(payload.level);
-    local.values.log.origin.set(payload.origin);
-    local.values.log.text.set(payload.text);
-    local.values.log.time.set(payload.time);
   } else if (type == 'ontime-refetch') {
     script.log('refetch');
   } else if (type == 'ontime-auxtimer1') {
     var auxTimer = local.values.auxTimer1;
-    auxTimer.duration.set(millisToString(payload.duration));
-    auxTimer.current.set(millisToString(payload.current));
-    auxTimer.playback.setData(payload.playback);
+    auxTimer.duration.set(millisToFloat(payload.duration));
+    auxTimer.current.set(millisToFloat(payload.current));
+    auxTimer.playback.setData(payload ? payload.playback : '');
     auxTimer.direction.setData(payload.direction);
   } else if (type == 'poll') {
     script.log('poll');
   } else if (type == 'version') {
+    local.parameters.ontimeVersion.set(payload);
+  } else if (type == 'client-name') {
+    local.parameters.clientName.set(payload);
+  } else if (type == 'ontime-log') {
   } else {
     script.log('type received: ' + type + '\nPayload:' + JSON.stringify(payload));
   }
