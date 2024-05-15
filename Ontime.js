@@ -4,15 +4,15 @@ function init() {
 
 function moduleParameterChanged(param) {
   // TODO: check version upon connection?
-  if (param.name == "connected") {
-    script.log("isConnected:"+ param.get());
-    if (param.get()){
-      local.send("{\"type\":\"version\"}");
+  if (param.name == 'connected') {
+    script.log('isConnected:' + param.get());
+    if (param.get()) {
+      local.send('{"type":"version"}');
     } else {
-      local.parameters.version.set("- not connected -");
+      local.parameters.version.set('- not connected -');
     }
   } else {
-    script.log("Parameter:" + param.name + " : " + param.get());
+    script.log('Parameter:' + param.name + ' : ' + param.get());
   }
   // else { local.values.version.set("- not connected -")}; */
 }
@@ -28,6 +28,15 @@ function moduleValueChanged(value) {
  */
 function pad(val) {
   return val > 9 ? '' + val : '0' + val;
+}
+
+/**
+ * implement trunc spec (https://tc39.es/ecma262/multipage/numbers-and-dates.html#sec-math.trunc)
+ * @param {number} val
+ * @returns {number}
+ */
+function trunc(val) {
+  return val > 0 ? Math.floor(val) : Math.ceil(val);
 }
 
 /**
@@ -50,31 +59,50 @@ function millisToString(millis) {
  * @returns {float}
  */
 function millisToFloat(millis) {
-  if(millis){
+  if (millis) {
     var sec = millis / 1000;
-    return Math.round(sec);
-  } else { return 0; }
+    return trunc(sec);
+  } else {
+    return 0;
+  }
 }
 
 function setEventData(eventObject, payload) {
-  // checking for the specific value results in null, must check against payload
-  eventObject.id.set(!!payload.id ? payload.id : "");
-  //eventObject.title.set(payload ? payload.title : "");
-  eventObject.title.set(!!payload.title ? payload.title : "");
-  eventObject.start.set(millisToFloat(payload.timeStart));
-  eventObject.end.set(millisToFloat(payload.timeEnd));
-  eventObject.duration.set(millisToFloat(payload.duration));
-  eventObject.endAction.setData(payload ? payload.endAction : "");
-  eventObject.timerType.setData(payload ? payload.timerType : "");
-  eventObject.public.set(payload.isPublic ? payload.isPublic : false);
-  eventObject.skip.set(payload.skip ? payload.skip : false);
-  eventObject.note.set(!!payload.note ? payload.note : "");
-  //TODO: Colour conversion
-  eventObject.colour.set(!!payload.colour ? payload.colour : "");
-  eventObject.cue.set(payload.cue ? payload.cue : "");
-  eventObject.warning.set(millisToFloat(payload.timeWarning));
-  eventObject.danger.set(millisToFloat(payload.timeDanger));
-  //TODO: add custom data
+  if (payload) {
+    eventObject.id.set(payload.id);
+    eventObject.title.set(payload.title);
+    eventObject.start.set(millisToFloat(payload.timeStart));
+    eventObject.end.set(millisToFloat(payload.timeEnd));
+    eventObject.duration.set(millisToFloat(payload.duration));
+    eventObject.endAction.setData(payload.endAction);
+    eventObject.timerType.setData(payload.timerType);
+    eventObject.public.set(payload.isPublic);
+    eventObject.skip.set(payload.skip);
+    eventObject.note.set(payload.note);
+    //TODO: Colour conversion
+    eventObject.colour.set(payload.colour);
+    eventObject.cue.set(payload.cue);
+    eventObject.warning.set(millisToFloat(payload.timeWarning));
+    eventObject.danger.set(millisToFloat(payload.timeDanger));
+    //TODO: add custom data
+  } else {
+    eventObject.id.set('');
+    eventObject.title.set('');
+    eventObject.start.set(0);
+    eventObject.end.set(0);
+    eventObject.duration.set(0);
+    eventObject.endAction.setData('');
+    eventObject.timerType.setData('');
+    eventObject.public.set(false);
+    eventObject.skip.set(false);
+    eventObject.note.set('');
+    //TODO: Colour conversion
+    eventObject.colour.set('');
+    eventObject.cue.set('');
+    eventObject.warning.set(0);
+    eventObject.danger.set(0);
+    //TODO: add custom data
+  }
 }
 
 function wsMessageReceived(message) {
@@ -112,7 +140,7 @@ function wsMessageReceived(message) {
   } else if (type == 'ontime-runtime') {
     var runtime = local.values.runtime;
 
-    runtime.activeEventIndex.set((payload.selectedEventIndex >= 0) ? payload.selectedEventIndex + 1 : -1); // Off by 1, starts at 0, -1 when inactive
+    runtime.selectedEventIndex.set(payload.selectedEventIndex === null ? 0 : payload.selectedEventIndex + 1); // Off by 1, starts at 0, -1 when inactive
     runtime.numEvents.set(payload.numEvents);
     runtime.offset.set(millisToFloat(payload.offset));
     runtime.plannedStart.set(millisToFloat(payload.plannedStart));
@@ -131,13 +159,6 @@ function wsMessageReceived(message) {
   } else if (type == 'ontime-publicEventNext') {
     var nextPublicEvent = local.values.nextPublicEvent;
     setEventData(nextPublicEvent, payload);
-  } else if (type == 'ontime-log') {
-    //TODO: Is this useful?
-    local.values.log.id.set(payload.id);
-    local.values.log.level.set(payload.level);
-    local.values.log.origin.set(payload.origin);
-    local.values.log.text.set(payload.text);
-    local.values.log.time.set(payload.time);
   } else if (type == 'ontime-refetch') {
     script.log('refetch');
   } else if (type == 'ontime-auxtimer1') {
@@ -145,7 +166,7 @@ function wsMessageReceived(message) {
     var auxTimer = local.values.auxTimer1;
     auxTimer.duration.set(millisToFloat(payload.duration));
     auxTimer.current.set(millisToFloat(payload.current));
-    auxTimer.playback.setData(payload ? payload.playback : "");
+    auxTimer.playback.setData(payload ? payload.playback : '');
     auxTimer.direction.setData(payload.direction);
   } else if (type == 'poll') {
     script.log('poll');
@@ -153,6 +174,7 @@ function wsMessageReceived(message) {
     local.parameters.ontimeVersion.set(payload);
   } else if (type == 'client-name') {
     local.parameters.clientName.set(payload);
+  } else if (type == 'ontime-log') {
   } else {
     script.log('type received: ' + type + '\nPayload:' + JSON.stringify(payload));
   }
