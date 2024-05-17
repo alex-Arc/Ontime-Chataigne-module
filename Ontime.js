@@ -1,4 +1,6 @@
-function init() {}
+function init() {
+  local.send('{"type":"version"}');
+}
 
 function moduleParameterChanged(param) {
   // TODO: check version upon connection?
@@ -8,11 +10,11 @@ function moduleParameterChanged(param) {
       local.send('{"type":"version"}');
     } else {
       local.parameters.version.set('- not connected -');
+      local.parameters.clientName.set("- not connected -");
     }
   } else {
     script.log('Parameter:' + param.name + ' : ' + param.get());
   }
-  // else { local.values.version.set("- not connected -")}; */
 }
 
 function moduleValueChanged(value) {
@@ -59,7 +61,11 @@ function millisToString(millis) {
 function millisToFloat(millis) {
   if (millis) {
     var sec = millis / 1000;
-    return trunc(sec);
+    if (local.parameters.increasedPrecision.get() == false) {
+      return trunc(sec);
+    } else {
+      return sec;
+    }
   } else {
     return 0;
   }
@@ -94,7 +100,6 @@ function setEventData(eventObject, payload) {
     eventObject.public.set(false);
     eventObject.skip.set(false);
     eventObject.note.set('');
-    //TODO: Colour conversion
     eventObject.colour.set('');
     eventObject.cue.set('');
     eventObject.warning.set(0);
@@ -110,20 +115,20 @@ function wsMessageReceived(message) {
 
   if (type == 'ontime') {
   } else if (type == 'ontime-clock') {
-    local.values.clock.set(millisToString(payload));
+    local.values.clock.set(millisToFloat(payload));
   } else if (type == 'ontime-onAir') {
     local.values.onAir.set(payload);
   } else if (type == 'ontime-timer') {
     var timer = local.values.mainTimer;
 
-    timer.addedTime.set(payload.addedTime);
-    timer.current.set(payload.current);
-    timer.duration.set(payload.duration);
-    timer.elapsed.set(payload.elapsed);
-    timer.expectedFinish.set(payload.expectedFinish);
-    timer.finishedAt.set(payload.finishedAt);
-    timer.playback.set(payload.playback);
-    timer.startedAt.set(payload.startedAt);
+    timer.addedTime.set(millisToFloat(payload.addedTime));
+    timer.current.set(millisToFloat(payload.current));
+    timer.duration.set(millisToFloat(payload.duration));
+    timer.elapsed.set(millisToFloat(payload.elapsed));
+    timer.expectedFinish.set(millisToFloat(payload.expectedFinish));
+    timer.finishedAt.set(millisToFloat(payload.finishedAt));
+    timer.playback.setData(payload.playback);
+    timer.startedAt.set(millisToFloat(payload.startedAt));
   } else if (type == 'ontime-message') {
     var messageTimer = local.values.message.timer;
     var messageExternal = local.values.message.external;
@@ -138,13 +143,13 @@ function wsMessageReceived(message) {
   } else if (type == 'ontime-runtime') {
     var runtime = local.values.runtime;
 
-    runtime.selectedEventIndex.set(payload.selectedEventIndex === null ? 0 : payload.selectedEventIndex + 1); // Off by 1, starts at 0, -1 when inactive
+    runtime.activeEventIndex.set(payload.selectedEventIndex === null ? 0 : payload.selectedEventIndex + 1); // Off by 1, 0 when inactive
     runtime.numEvents.set(payload.numEvents);
-    runtime.offset.set(millisToString(payload.offset));
-    runtime.plannedStart.set(millisToString(payload.plannedStart));
-    runtime.plannedEnd.set(millisToString(payload.plannedEnd));
-    runtime.actualStart.set(millisToString(payload.actualStart));
-    runtime.expectedEnd.set(millisToString(payload.expectedEnd));
+    runtime.offset.set(millisToFloat(payload.offset));
+    runtime.plannedStart.set(millisToFloat(payload.plannedStart));
+    runtime.plannedEnd.set(millisToFloat(payload.plannedEnd));
+    runtime.actualStart.set(millisToFloat(payload.actualStart));
+    runtime.expectedEnd.set(millisToFloat(payload.expectedEnd));
   } else if (type == 'ontime-eventNow') {
     var currentEvent = local.values.currentEvent;
     setEventData(currentEvent, payload);
@@ -160,6 +165,7 @@ function wsMessageReceived(message) {
   } else if (type == 'ontime-refetch') {
     script.log('refetch');
   } else if (type == 'ontime-auxtimer1') {
+    // TODO: ability to label aux timers and prepare ability to have more than one?
     var auxTimer = local.values.auxTimer1;
     auxTimer.duration.set(millisToFloat(payload.duration));
     auxTimer.current.set(millisToFloat(payload.current));
