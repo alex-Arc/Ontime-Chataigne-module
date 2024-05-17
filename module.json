@@ -132,7 +132,7 @@
         "readOnly": true
       }
     },
-    "messageTimer": {
+    "Next Event": {
       "type": "Container",
       "collapsed": true,
       "id": { "type": "String", "readOnly": true },
