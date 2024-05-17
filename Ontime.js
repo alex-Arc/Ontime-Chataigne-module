@@ -85,6 +85,7 @@ function setEventData(eventObject, payload) {
     eventObject.note.set(payload.note);
     //TODO: Colour conversion
     eventObject.colour.set(payload.colour);
+    eventObject.color.set(parseInt(payload.colour.replace('#', '0xff')));
     eventObject.cue.set(payload.cue);
     eventObject.warning.set(millisToFloat(payload.timeWarning));
     eventObject.danger.set(millisToFloat(payload.timeDanger));
