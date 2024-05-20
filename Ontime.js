@@ -10,7 +10,7 @@ function moduleParameterChanged(param) {
       local.send('{"type":"version"}');
     } else {
       local.parameters.version.set('- not connected -');
-      local.parameters.clientName.set("- not connected -");
+      local.parameters.clientName.set('- not connected -');
     }
   } else {
     script.log('Parameter:' + param.name + ' : ' + param.get());
