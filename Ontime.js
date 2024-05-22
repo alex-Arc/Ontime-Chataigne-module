@@ -71,8 +71,12 @@ function millisToFloat(millis) {
   }
 }
 
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/named-color
+ * @param {string} value
+ * @returns {hexInteger}
+ */
 function cssColors(value) {
-  // https://developer.mozilla.org/en-US/docs/Web/CSS/named-color
   var cssColors = {
     'aliceblue': '0xfff0f8ff',
     'antiquewhite': '0xfffaebd7',
@@ -245,9 +249,8 @@ function setEventData(eventObject, payload) {
     eventObject.public.set(payload.isPublic);
     eventObject.skip.set(payload.skip);
     eventObject.note.set(payload.note);
-    //TODO: Colour conversion
     eventObject.colour.set(payload.colour);
-    eventObject.color.set(cssColors(payload.colour));
+    eventObject.colourSwatch.set(cssColors(payload.colour));
     eventObject.cue.set(payload.cue);
     eventObject.warning.set(millisToFloat(payload.timeWarning));
     eventObject.danger.set(millisToFloat(payload.timeDanger));
@@ -264,7 +267,7 @@ function setEventData(eventObject, payload) {
     eventObject.skip.set(false);
     eventObject.note.set('');
     eventObject.colour.set('');
-    eventObject.color.set(0x00000000);
+    eventObject.colourSwatch.set(0x00000000);
     eventObject.cue.set('');
     eventObject.warning.set(0);
     eventObject.danger.set(0);
