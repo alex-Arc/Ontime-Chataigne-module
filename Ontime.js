@@ -9,7 +9,7 @@ function moduleParameterChanged(param) {
     if (param.get()) {
       local.send('{"type":"version"}');
     } else {
-      local.parameters.version.set('- not connected -');
+      local.parameters.ontimeVersion.set('- not connected -');
       local.parameters.clientName.set('- not connected -');
     }
   } else {
@@ -350,6 +350,11 @@ function wsMessageReceived(message) {
   } else if (type == 'client-name') {
     local.parameters.clientName.set(payload);
   } else if (type == 'ontime-log') {
+    if (payload.level == "ERROR") {
+      script.logError(payload.id + ":" + payload.origin + " : " + payload.text);
+    } else {
+      script.log('type received: ' + type + '\nPayload:' + JSON.stringify(payload));
+    }
   } else {
     script.log('type received: ' + type + '\nPayload:' + JSON.stringify(payload));
   }
@@ -437,8 +442,9 @@ function changeEvent(
   endAction,
   timeWarning,
   timeDanger,
-  colour,
-  color,
+  selectColour,
+  pickColour,
+  writeColour,
   customID,
   customText,
 ) {
@@ -449,17 +455,18 @@ function changeEvent(
   } else if (action == 'cue') {
     local.send('{"type":"change", "payload":{"' + id + '":{"cue":"' + cue + '"}}}');
   } else if (action == 'timeStart') {
+    // Not whitelisted
     timeStart = parseInt(timeStart) * 1000;
     local.send('{"type":"change", "payload":{"' + id + '":{"timeStart":' + timeStart + '}}}');
   } else if (action == 'linkStart') {
-    // Currently not working. Only links to specific event? not previous?
+    // Not whitelisted
     local.send('{"type":"change", "payload":{"' + id + '":{"linkStart":' + linkStart + '}}}');
   } else if (action == 'timeEnd') {
-    // Currently not working
+    // Not whitelisted
     timeEnd = parseInt(timeEnd) * 1000;
     local.send('{"type":"change", "payload":{"' + id + '":{"timeEnd":' + timeEnd + '}}}');
   } else if (action == 'timeStrategy') {
-    // Currently not working
+    // Not whitelisted
     if (timeStrategy == 'lock-end') {
       local.send('{"type":"change", "payload":{"' + id + '":{"timeStrategy":"lock-end"}}}');
     } else if (timeStrategy == 'lock-duration') {
@@ -471,32 +478,36 @@ function changeEvent(
   } else if (action == 'skip') {
     local.send('{"type":"change", "payload":{"' + id + '":{"' + action + '":' + skip + '}}}');
   } else if (action == 'isPublic') {
-    // Currently not working
+    // BUG? Is whitelisted but logged as 'Property isPublic not permitted'
     local.send('{"type":"change", "payload":{"' + id + '":{"isPublic":' + public + '}}}');
   } else if (action == 'timerType') {
-    // Currently not working
+    // Not whitelisted
     local.send('{"type":"change", "payload":{"' + id + '":{"' + action + '":"' + timerType + '"}}}');
   } else if (action == 'endAction') {
-    // Currently not working
+    // Not whitelisted
     local.send('{"type":"change", "payload":{"' + id + '":{"' + action + '":"' + endAction + '"}}}');
   } else if (action == 'timeWarning') {
-    // Currently not working
+    // Not whitelisted
     timeWarning = parseInt(timeWarning) * 1000;
-    local.send('{"type":"change", "payload":{"' + id + '":{"timeEnd":' + timeWarning + '}}}');
+    local.send('{"type":"change", "payload":{"' + id + '":{"timeWarning":' + timeWarning + '}}}');
   } else if (action == 'timeDanger') {
-    // Currently not working
+    // Not whitelisted
     timeDanger = parseInt(timeDanger) * 1000;
-    local.send('{"type":"change", "payload":{"' + id + '":{"timeEnd":' + timeDanger + '}}}');
-  } else if (action == 'colour') {
+    local.send('{"type":"change", "payload":{"' + id + '":{"timeDanger":' + timeDanger + '}}}');
+  } else if (action == 'selectColour') {
     //user selects enumerated value.
     if (color == 'none') {
       local.send('{"type":"change", "payload":{"' + id + '":{"colour":""}}}');
     } else {
-      local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + colour + '"}}}'); //using enum
+      local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + selectColour + '"}}}'); //using enum
     }
-  } else if (action == 'color') {
+  } else if (action == 'pickColour') {
+    var hexColor = "#000000";
+    script.log(" R:" + parseInt(pickColour[0]*256) + " G:" + parseInt(pickColour[1]*256) + " B:" + parseInt(pickColour[2]*256));
+    local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + hexColor + '"}}}'); //writing value
+  } else if (action == 'writeColour') {
     //user inputs string
-    local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + color + '"}}}'); //writing value
+    local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + writeColour + '"}}}'); //writing value
   } else if (action == 'custom') {
     local.send('{"type":"change", "payload":{"' + id + '":{"custom:' + customID + '":"' + customText + '"}}}');
   }
