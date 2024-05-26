@@ -308,6 +308,44 @@ function wsMessageReceived(message) {
   var payload = message.payload;
 
   if (type == 'ontime') {
+    local.parameters.ontimeVersion.set('2.x');
+
+    local.values.clock.set(millisToFloat(payload.timer.clock));
+
+    var timer = local.values.mainTimer;
+    timer.addedTime.set(millisToFloat(payload.timer.addedTime));
+    timer.current.set(millisToFloat(payload.timer.current));
+    timer.duration.set(millisToFloat(payload.timer.duration));
+    timer.elapsed.set(millisToFloat(payload.timer.elapsed));
+    timer.expectedFinish.set(millisToFloat(payload.timer.expectedFinish));
+    timer.finishedAt.set(millisToFloat(payload.timer.finishedAt));
+    timer.playback.setData(payload.playback);
+    timer.startedAt.set(millisToFloat(payload.timer.startedAt));
+
+    var messageTimer = local.values.message.timer;
+    var messageExternal = local.values.message.external;
+    messageTimer.text.set(payload.timerMessage.text);
+    messageTimer.visible.set(payload.timerMessage.visible);
+    messageTimer.blink.set(payload.timerMessage.timerBlink);
+    messageTimer.blackout.set(payload.timerMessage.timerBlackout);
+    messageExternal.text.set(payload.externalMessage.text);
+    messageExternal.visible.set(payload.externalMessage.visible);
+
+    local.values.onAir.set(payload.onAir);
+
+    var runtime = local.values.runtime;
+    runtime.currentEventIndex.set(payload.loaded.selectedEventIndex === null ? 0 : payload.loaded.selectedEventIndex + 1); // Off by 1, 0 when inactive
+    runtime.numEvents.set(payload.loaded.numEvents);
+  //    runtime.offset.set(millisToFloat(0));
+  //    runtime.plannedStart.set(millisToFloat(0));
+  //    runtime.plannedEnd.set(millisToFloat(0));
+  //    runtime.actualStart.set(millisToFloat(0));
+  //    runtime.expectedEnd.set(millisToFloat(0));
+
+    setEventData(local.values.currentEvent, payload.eventNow);
+    setEventData(local.values.nextEvent, payload.eventNext);
+    setEventData(local.values.currentPublicEvent, payload.publicEventNow);
+    setEventData(local.values.nextPublicEvent, payload.publicEventNext);
   } else if (type == 'ontime-clock') {
     local.values.clock.set(millisToFloat(payload));
   } else if (type == 'ontime-onAir') {
