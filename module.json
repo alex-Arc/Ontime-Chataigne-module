@@ -107,7 +107,7 @@
       "id": { "type": "String", "readOnly": true },
       "Title": { "type": "String", "readOnly": true },
       "Cue": { "type": "String", "readOnly": true },
-      "Colour": { "type": "String", "readOnly": true },
+      "Colour": { "type": "Color", "readOnly": true },
       "Note": { "type": "String", "readOnly": true },
       "Start": { "type": "Float", "ui": "time", "readOnly": true },
       "End": { "type": "Float", "ui": "time", "readOnly": true },
@@ -145,7 +145,7 @@
       "id": { "type": "String", "readOnly": true },
       "Title": { "type": "String", "readOnly": true },
       "Cue": { "type": "String", "readOnly": true },
-      "Colour": { "type": "String", "readOnly": true },
+      "Colour": { "type": "Color", "readOnly": true },
       "Note": { "type": "String", "readOnly": true },
       "Start": { "type": "Float", "ui": "time", "readOnly": true },
       "End": { "type": "Float", "ui": "time", "readOnly": true },
@@ -183,7 +183,7 @@
       "id": { "type": "String", "readOnly": true },
       "Title": { "type": "String", "readOnly": true },
       "Cue": { "type": "String", "readOnly": true },
-      "Colour": { "type": "String", "readOnly": true },
+      "Colour": { "type": "Color", "readOnly": true },
       "Note": { "type": "String", "readOnly": true },
       "Start": { "type": "Float", "ui": "time", "readOnly": true },
       "End": { "type": "Float", "ui": "time", "readOnly": true },
@@ -221,7 +221,7 @@
       "id": { "type": "String", "readOnly": true },
       "Title": { "type": "String", "readOnly": true },
       "Cue": { "type": "String", "readOnly": true },
-      "Colour": { "type": "String", "readOnly": true },
+      "Colour": { "type": "Color", "readOnly": true },
       "Note": { "type": "String", "readOnly": true },
       "Start": { "type": "Float", "ui": "time", "readOnly": true },
       "End": { "type": "Float", "ui": "time", "readOnly": true },
@@ -483,8 +483,9 @@
             "End action": "endAction",
             "Warning time": "timeWarning",
             "Danger time": "timeDanger",
-            "Pick cue color": "colour",
-            "Write cue color": "color",
+            "Select cue colour": "selectColour",
+            "Pick cue colour": "pickColour",
+            "Write cue colour": "writeColour",
             "Custom fields": "custom"
           },
           "description": "Select action to preform"
@@ -671,7 +672,17 @@
           },
           "dependency": {
             "source": "targetChange",
-            "value": "colour",
+            "value": "selectColour",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "Pick cue colour": {
+          "type": "Color",
+          "description": "# hex color or named css color",
+          "dependency": {
+            "source": "targetChange",
+            "value": "pickColour",
             "check": "equals",
             "action": "show"
           }
@@ -681,7 +692,7 @@
           "description": "# hex color or named css color",
           "dependency": {
             "source": "targetChange",
-            "value": "color",
+            "value": "writeColour",
             "check": "equals",
             "action": "show"
           }
