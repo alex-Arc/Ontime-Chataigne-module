@@ -326,24 +326,6 @@ function changeEvent(
     local.send('{"type":"change", "payload":{"' + id + '":{"note":"' + note + '"}}}');
   } else if (action == 'cue') {
     local.send('{"type":"change", "payload":{"' + id + '":{"cue":"' + cue + '"}}}');
-  } else if (action == 'timeStart') {
-    // Not whitelisted
-    timeStart = parseInt(timeStart) * 1000;
-    local.send('{"type":"change", "payload":{"' + id + '":{"timeStart":' + timeStart + '}}}');
-  } else if (action == 'linkStart') {
-    // Not whitelisted
-    local.send('{"type":"change", "payload":{"' + id + '":{"linkStart":' + linkStart + '}}}');
-  } else if (action == 'timeEnd') {
-    // Not whitelisted
-    timeEnd = parseInt(timeEnd) * 1000;
-    local.send('{"type":"change", "payload":{"' + id + '":{"timeEnd":' + timeEnd + '}}}');
-  } else if (action == 'timeStrategy') {
-    // Not whitelisted
-    if (timeStrategy == 'lock-end') {
-      local.send('{"type":"change", "payload":{"' + id + '":{"timeStrategy":"lock-end"}}}');
-    } else if (timeStrategy == 'lock-duration') {
-      local.send('{"type":"change", "payload":{"' + id + '":{"timeStrategy":"lock-duration"}}}');
-    }
   } else if (action == 'duration') {
     duration = parseInt(duration);
     local.send('{"type":"change", "payload":{"' + id + '":{"duration":' + duration + '}}}');
@@ -352,20 +334,6 @@ function changeEvent(
   } else if (action == 'isPublic') {
     // BUG? Is whitelisted but logged as 'Property isPublic not permitted'
     local.send('{"type":"change", "payload":{"' + id + '":{"isPublic":' + public + '}}}');
-  } else if (action == 'timerType') {
-    // Not whitelisted
-    local.send('{"type":"change", "payload":{"' + id + '":{"' + action + '":"' + timerType + '"}}}');
-  } else if (action == 'endAction') {
-    // Not whitelisted
-    local.send('{"type":"change", "payload":{"' + id + '":{"' + action + '":"' + endAction + '"}}}');
-  } else if (action == 'timeWarning') {
-    // Not whitelisted
-    timeWarning = parseInt(timeWarning) * 1000;
-    local.send('{"type":"change", "payload":{"' + id + '":{"timeWarning":' + timeWarning + '}}}');
-  } else if (action == 'timeDanger') {
-    // Not whitelisted
-    timeDanger = parseInt(timeDanger) * 1000;
-    local.send('{"type":"change", "payload":{"' + id + '":{"timeDanger":' + timeDanger + '}}}');
   } else if (action == 'selectColour') {
     //user selects enumerated value.
     if (color == 'none') {
