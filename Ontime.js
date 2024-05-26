@@ -254,8 +254,7 @@ function setEventData(eventObject, payload) {
     eventObject.public.set(payload.isPublic);
     eventObject.skip.set(payload.skip);
     eventObject.note.set(payload.note);
-    eventObject.colour.set(payload.colour);
-    eventObject.colourSwatch.set(cssColors(payload.colour));
+    eventObject.colour.set(cssColors(payload.colour));
     eventObject.cue.set(payload.cue);
     eventObject.warning.set(millisToFloat(payload.timeWarning));
     eventObject.danger.set(millisToFloat(payload.timeDanger));
@@ -271,8 +270,7 @@ function setEventData(eventObject, payload) {
     eventObject.public.set(false);
     eventObject.skip.set(false);
     eventObject.note.set('');
-    eventObject.colour.set('');
-    eventObject.colourSwatch.set(0x00000000);
+    eventObject.colour.set(0x00000000);
     eventObject.cue.set('');
     eventObject.warning.set(0);
     eventObject.danger.set(0);
@@ -350,8 +348,8 @@ function wsMessageReceived(message) {
   } else if (type == 'client-name') {
     local.parameters.clientName.set(payload);
   } else if (type == 'ontime-log') {
-    if (payload.level == "ERROR") {
-      script.logError(payload.id + ":" + payload.origin + " : " + payload.text);
+    if (payload.level == 'ERROR') {
+      script.logError(payload.id + ':' + payload.origin + ' : ' + payload.text);
     } else {
       script.log('type received: ' + type + '\nPayload:' + JSON.stringify(payload));
     }
@@ -502,8 +500,15 @@ function changeEvent(
       local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + selectColour + '"}}}'); //using enum
     }
   } else if (action == 'pickColour') {
-    var hexColor = "#000000";
-    script.log(" R:" + parseInt(pickColour[0]*256) + " G:" + parseInt(pickColour[1]*256) + " B:" + parseInt(pickColour[2]*256));
+    var hexColor = '#000000';
+    script.log(
+      ' R:' +
+        parseInt(pickColour[0] * 256) +
+        ' G:' +
+        parseInt(pickColour[1] * 256) +
+        ' B:' +
+        parseInt(pickColour[2] * 256),
+    );
     local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + hexColor + '"}}}'); //writing value
   } else if (action == 'writeColour') {
     //user inputs string
