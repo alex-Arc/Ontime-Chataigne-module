@@ -22,7 +22,31 @@ function moduleValueChanged(value) {
 }
 
 /**
- *  pads number with a 0
+ * convert integer to hex string
+ * @param {number} val
+ * @returns {string}
+ */
+function toHex(val) {
+  if (val == 0) {
+    return '00';
+  }
+  var digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+  var result = '';
+  var tmp = val;
+  while (tmp > 0) {
+    result = digits[tmp % 16] + result;
+    tmp = Math.floor(tmp / 16);
+  }
+
+  if (val < 16) {
+    return '0' + result;
+  }
+
+  return result;
+}
+
+/**
+ * pads number with a 0
  * @param {number} val
  * @returns {string}
  */
@@ -500,15 +524,15 @@ function changeEvent(
       local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + selectColour + '"}}}'); //using enum
     }
   } else if (action == 'pickColour') {
-    var hexColor = '#000000';
-    script.log(
-      ' R:' +
-        parseInt(pickColour[0] * 256) +
-        ' G:' +
-        parseInt(pickColour[1] * 256) +
-        ' B:' +
-        parseInt(pickColour[2] * 256),
-    );
+    script.log('color');
+    var hexColor =
+      '#' +
+      toHex(parseInt(pickColour[0] * 255)) +
+      toHex(parseInt(pickColour[1] * 255)) +
+      toHex(parseInt(pickColour[2] * 255)) +
+      toHex(parseInt(pickColour[3] * 255));
+
+    script.log(hexColor);
     local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + hexColor + '"}}}'); //writing value
   } else if (action == 'writeColour') {
     //user inputs string
