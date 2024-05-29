@@ -303,17 +303,9 @@ function changeEvent(
   title,
   note,
   cue,
-  timeStart,
-  linkStart,
-  timeEnd,
-  timeStrategy,
   duration,
   skip,
   public,
-  timerType,
-  endAction,
-  timeWarning,
-  timeDanger,
   selectColour,
   pickColour,
   writeColour,
@@ -332,7 +324,6 @@ function changeEvent(
   } else if (action == 'skip') {
     local.send('{"type":"change", "payload":{"' + id + '":{"' + action + '":' + skip + '}}}');
   } else if (action == 'isPublic') {
-    // BUG? Is whitelisted but logged as 'Property isPublic not permitted'
     local.send('{"type":"change", "payload":{"' + id + '":{"isPublic":' + public + '}}}');
   } else if (action == 'selectColour') {
     //user selects enumerated value.
