@@ -468,76 +468,32 @@ function changeEvent(
   pickColour,
   writeColour,
   customID,
-  customText,
+  customText
 ) {
-  if (action == 'title') {
-    local.send('{"type":"change", "payload":{"' + id + '":{"title":"' + title + '"}}}');
-  } else if (action == 'note') {
-    local.send('{"type":"change", "payload":{"' + id + '":{"note":"' + note + '"}}}');
-  } else if (action == 'cue') {
-    local.send('{"type":"change", "payload":{"' + id + '":{"cue":"' + cue + '"}}}');
-  } else if (action == 'timeStart') {
-    // Not whitelisted
-    timeStart = parseInt(timeStart) * 1000;
-    local.send('{"type":"change", "payload":{"' + id + '":{"timeStart":' + timeStart + '}}}');
-  } else if (action == 'linkStart') {
-    // Not whitelisted
-    local.send('{"type":"change", "payload":{"' + id + '":{"linkStart":' + linkStart + '}}}');
-  } else if (action == 'timeEnd') {
-    // Not whitelisted
-    timeEnd = parseInt(timeEnd) * 1000;
-    local.send('{"type":"change", "payload":{"' + id + '":{"timeEnd":' + timeEnd + '}}}');
-  } else if (action == 'timeStrategy') {
-    // Not whitelisted
-    if (timeStrategy == 'lock-end') {
-      local.send('{"type":"change", "payload":{"' + id + '":{"timeStrategy":"lock-end"}}}');
-    } else if (timeStrategy == 'lock-duration') {
-      local.send('{"type":"change", "payload":{"' + id + '":{"timeStrategy":"lock-duration"}}}');
-    }
-  } else if (action == 'duration') {
-    duration = parseInt(duration);
-    local.send('{"type":"change", "payload":{"' + id + '":{"duration":' + duration + '}}}');
-  } else if (action == 'skip') {
-    local.send('{"type":"change", "payload":{"' + id + '":{"' + action + '":' + skip + '}}}');
-  } else if (action == 'isPublic') {
-    // BUG? Is whitelisted but logged as 'Property isPublic not permitted'
-    local.send('{"type":"change", "payload":{"' + id + '":{"isPublic":' + public + '}}}');
-  } else if (action == 'timerType') {
-    // Not whitelisted
-    local.send('{"type":"change", "payload":{"' + id + '":{"' + action + '":"' + timerType + '"}}}');
-  } else if (action == 'endAction') {
-    // Not whitelisted
-    local.send('{"type":"change", "payload":{"' + id + '":{"' + action + '":"' + endAction + '"}}}');
-  } else if (action == 'timeWarning') {
-    // Not whitelisted
-    timeWarning = parseInt(timeWarning) * 1000;
-    local.send('{"type":"change", "payload":{"' + id + '":{"timeWarning":' + timeWarning + '}}}');
-  } else if (action == 'timeDanger') {
-    // Not whitelisted
-    timeDanger = parseInt(timeDanger) * 1000;
-    local.send('{"type":"change", "payload":{"' + id + '":{"timeDanger":' + timeDanger + '}}}');
-  } else if (action == 'selectColour') {
-    //user selects enumerated value.
-    if (color == 'none') {
-      local.send('{"type":"change", "payload":{"' + id + '":{"colour":""}}}');
-    } else {
-      local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + selectColour + '"}}}'); //using enum
-    }
-  } else if (action == 'pickColour') {
-    script.log('color');
-    var hexColor =
-      '#' +
+  // TODO: a timeout that won't let users spam change requests?
+  var changeAction = {
+    'title': ['title', title],
+    'note': ['note', note],
+    'cue': ['cue',cue],
+    'timeStart': ['timeStart',parseInt(timeStart) * 1000],
+    'linkStart': ['linkStart',linkStart],
+    'timeEnd': ['timeEnd',parseInt(timeEnd) * 1000],
+    'timeStrategy': ['timeStrategy',timeStrategy],
+    'duration': ['duration',parseInt(duration) + 86400],
+    'skip': ['skip',skip],
+    'isPublic': ['isPublic',public],
+    'timerType': ['timerType',timerType],
+    'endAction': ['endAction',endAction],
+    'timeWarning': ['timeWarning',parseInt(timeWarning) * 1000],
+    'timeDanger': ['timeDanger',parseInt(timeDanger) * 1000],
+    'selectColour': ['colour',selectColour],
+    'pickColour': ['colour','#' +
       toHex(parseInt(pickColour[0] * 255)) +
       toHex(parseInt(pickColour[1] * 255)) +
       toHex(parseInt(pickColour[2] * 255)) +
-      toHex(parseInt(pickColour[3] * 255));
-
-    script.log(hexColor);
-    local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + hexColor + '"}}}'); //writing value
-  } else if (action == 'writeColour') {
-    //user inputs string
-    local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + writeColour + '"}}}'); //writing value
-  } else if (action == 'custom') {
-    local.send('{"type":"change", "payload":{"' + id + '":{"custom:' + customID + '":"' + customText + '"}}}');
-  }
+      toHex(parseInt(pickColour[3] * 255))],
+    'writeColour': ['colour',writeColour],
+    'custom': ['custom:'+customID, customText]
+  };
+  local.send('{"type":"change", "payload":{"' + id + '":{"' + changeAction[action][0] + '":"' + changeAction[action][1] + '"}}}');
 }
