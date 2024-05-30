@@ -1,17 +1,20 @@
 function init() {
   local.send('{"type":"version"}');
+  script.enableLog.set(true);
 }
 
 function moduleParameterChanged(param) {
-  // TODO: check version upon connection?
   if (param.name == 'connected') {
-    script.log('isConnected:' + param.get());
     if (param.get()) {
       local.send('{"type":"version"}');
     } else {
       local.parameters.ontimeVersion.set('- not connected -');
       local.parameters.clientName.set('- not connected -');
     }
+  } else if (param.name == 'ontimeVersion') {
+    // script.log('Parameter:' + param.name + ' : ' + param.get());  //
+  } else if (param.name == 'clientName') {
+    // script.log('Parameter:' + param.name + ' : ' + param.get());
   } else {
     script.log('Parameter:' + param.name + ' : ' + param.get());
   }
@@ -132,25 +135,46 @@ function setEventData(eventObject, payload) {
     eventObject.cue.set(payload.cue);
     eventObject.warning.set(millisToFloat(payload.timeWarning));
     eventObject.danger.set(millisToFloat(payload.timeDanger));
-    //TODO: add custom data
+    //TODO: add ability to remove custom data keys
+    // first clear custom values before adding available data
+    var customClear = util.getObjectProperties(eventObject.custom, true, false);
+    if (customClear.length > 0) {
+      for (var i = 0; i < customClear.length; i++) {
+        eventObject.custom[customClear[i]].resetValue();
+      }
+    }
+    var custom = util.getObjectProperties(payload.custom);
+    if (custom.length > 0) {
+      for (var i = 0; i < custom.length; i++) {
+        if (!eventObject.custom[custom[i]]) {
+          eventObject.custom.addStringParameter(custom[i], "User set data for: " + custom[i], "");
+          eventObject.custom[custom[i]].setAttribute("multiline", true);
+//          eventObject.custom[custom[i]].setAttribute("saveValueOnly", false); //Can't do this until removal is possible
+          eventObject.custom[custom[i]].setAttribute("readOnly", true);
+          eventObject.custom[custom[i]].setAttribute("removable", true); // Doesn't seem to work in the expected way
+        }
+        eventObject.custom[custom[i]].set(payload.custom[custom[i]]);
+      }
+    }
   } else {
-    eventObject.id.set('');
-    eventObject.title.set('');
-    eventObject.start.set(0);
-    eventObject.end.set(0);
-    eventObject.duration.set(0);
-    eventObject.endAction.setData('');
-    eventObject.timerType.setData('');
-    eventObject.public.set(false);
-    eventObject.skip.set(false);
-    eventObject.note.set('');
-    eventObject.colour.set(0x00000000);
-    eventObject.cue.set('');
-    eventObject.warning.set(0);
-    eventObject.danger.set(0);
-    //TODO: add custom data
+    // Resets all values to defaults
+    var eventData = util.getObjectProperties(eventObject, true, false);
+    if (eventData.length > 0) {
+      for (var i = 0; i < eventData.length; i++) {
+        if (eventObject[eventData[i]]._type != "Container") {
+          eventObject[eventData[i]].resetValue();
+        }
+      }
+    }
+    var custom = util.getObjectProperties(eventObject.custom, true, false);
+    if (custom.length > 0) {
+      for (var i = 0; i < custom.length; i++) {
+        eventObject.custom[custom[i]].resetValue();
+      }
+    }
   }
 }
+
 
 function wsMessageReceived(message) {
   message = JSON.parse(message);
@@ -224,6 +248,9 @@ function wsMessageReceived(message) {
   } else if (type == 'ontime-log') {
     if (payload.level == 'ERROR') {
       script.logError(payload.id + ':' + payload.origin + ' : ' + payload.text);
+    } else if (payload.level == 'INFO') {
+      //TODO: user setting to show info in the log? If they want more they just log ALL incoming data
+      //script.logError(payload.id + ':' + payload.origin + ' : ' + payload.text);
     } else {
       script.log('type received: ' + type + '\nPayload:' + JSON.stringify(payload));
     }
@@ -349,6 +376,23 @@ function changeEvent(
   } else if (action == 'custom') {
     local.send('{"type":"change", "payload":{"' + id + '":{"custom:' + customID + '":"' + customText + '"}}}');
   }
+}
+
+function removeCustomData() {
+  function removeStuff(item) {
+    var target = util.getObjectProperties(item, true, false);
+    if (target.length > 0) {
+      for (var i = 0; i < target.length; i++) {
+        // is 'removed' but interaction with the 'removed' items crashes Chataigne.
+        //item.removeParameter(target[i]);
+      }
+    }
+  }
+  // util.showOkCancelBox('identyfyMe','Remove all custom fields?', 'This will remove all custom fields within events', 'warning', 'Ok', 'Cancel')
+  removeStuff(local.values.currentEvent.custom);
+  removeStuff(local.values.nextEvent.custom);
+  removeStuff(local.values.currentPublicEvent.custom);
+  removeStuff(local.values.nextPublicEvent.custom);
 }
 
 var cssNamedColors = {

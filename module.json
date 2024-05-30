@@ -137,6 +137,10 @@
           "Clock": "clock"
         },
         "readOnly": true
+      },
+      "Custom": {
+        "type": "Container",
+        "collapsed": true
       }
     },
     "Next Event": {
@@ -175,6 +179,10 @@
           "Clock": "clock"
         },
         "readOnly": true
+      },
+      "Custom": {
+        "type": "Container",
+        "collapsed": true
       }
     },
     "Current Public Event": {
@@ -213,6 +221,10 @@
           "Clock": "clock"
         },
         "readOnly": true
+      },
+      "Custom": {
+        "type": "Container",
+        "collapsed": true
       }
     },
     "Next Public Event": {
@@ -251,6 +263,10 @@
           "Clock": "clock"
         },
         "readOnly": true
+      },
+      "Custom": {
+        "type": "Container",
+        "collapsed": true
       }
     },
     "Aux Timer 1": {
