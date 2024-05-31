@@ -336,16 +336,35 @@ function wsMessageReceived(message) {
     var runtime = local.values.runtime;
     runtime.currentEventIndex.set(payload.loaded.selectedEventIndex === null ? 0 : payload.loaded.selectedEventIndex + 1); // Off by 1, 0 when inactive
     runtime.numEvents.set(payload.loaded.numEvents);
-  //    runtime.offset.set(millisToFloat(0));
-  //    runtime.plannedStart.set(millisToFloat(0));
-  //    runtime.plannedEnd.set(millisToFloat(0));
-  //    runtime.actualStart.set(millisToFloat(0));
-  //    runtime.expectedEnd.set(millisToFloat(0));
+    //    runtime.offset.set(millisToFloat(0));
+    //    runtime.plannedStart.set(millisToFloat(0));
+    //    runtime.plannedEnd.set(millisToFloat(0));
+    //    runtime.actualStart.set(millisToFloat(0));
+    //    runtime.expectedEnd.set(millisToFloat(0));
 
-    setEventData(local.values.currentEvent, payload.eventNow);
-    setEventData(local.values.nextEvent, payload.eventNext);
-    setEventData(local.values.currentPublicEvent, payload.publicEventNow);
-    setEventData(local.values.nextPublicEvent, payload.publicEventNext);
+    // move specific v2 values to v3 custom category
+    function customV2(targetEvent) {
+      targetEvent.custom = {
+        'presenter':targetEvent.presenter,
+        'subtitle':targetEvent.subtitle,
+        'user0':targetEvent.user0,
+        'user1':targetEvent.user1,
+        'user2':targetEvent.user2,
+        'user3':targetEvent.user3,
+        'user4':targetEvent.user4,
+        'user5':targetEvent.user5,
+        'user6':targetEvent.user6,
+        'user7':targetEvent.user7,
+        'user8':targetEvent.user8,
+        'user9':targetEvent.user9
+      };
+      return targetEvent;
+    }
+
+    setEventData(local.values.currentEvent, customV2(payload.eventNow));
+    setEventData(local.values.nextEvent, customV2(payload.eventNext));
+    setEventData(local.values.currentPublicEvent, customV2(payload.publicEventNow));
+    setEventData(local.values.nextPublicEvent, customV2(payload.publicEventNext));
   } else if (type == 'ontime-clock') {
     local.values.clock.set(millisToFloat(payload));
   } else if (type == 'ontime-onAir') {
