@@ -171,6 +171,7 @@ function wsMessageReceived(message) {
     timer.elapsed.set(millisToFloat(payload.elapsed));
     timer.expectedFinish.set(millisToFloat(payload.expectedFinish));
     timer.finishedAt.set(millisToFloat(payload.finishedAt));
+    timer.phase.setData(payload.phase);
     timer.playback.setData(payload.playback);
     timer.startedAt.set(millisToFloat(payload.startedAt));
   } else if (type == 'ontime-message') {
