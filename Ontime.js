@@ -254,8 +254,14 @@ function cssColors(value) {
   };
   if (cssColors[value] != null) {
     return parseInt(cssColors[value]);
-  } else if (value.length == 7) {
+  } else if (value.length == 4) { // expects #RGB
+    var result = '0xff' + value.substring(1, 2) + '0' + value.substring(2, 3) + '0' + value.substring(3, 4) + '0';
+    return parseInt(result);
+  } else if (value.length == 7) { // expects #RRGGBB
     return parseInt(value.replace('#', '0xff'));
+  } else if (value.length == 9) { // expects #RRGGBBAA
+    var result = '0x' + value.substring(7, 9) + value.substring(1, 7);
+    return parseInt(result);
   } else {
     return 0xff303030; // no or invalid colour
   }
@@ -475,18 +481,17 @@ function changeEvent(
     'title': ['title', title],
     'note': ['note', note],
     'cue': ['cue',cue],
-    'timeStart': ['timeStart',parseInt(timeStart) * 1000],
+    'timeStart': ['timeStart',parseInt(timeStart)],
     'linkStart': ['linkStart',linkStart],
-    'timeEnd': ['timeEnd',parseInt(timeEnd) * 1000],
-    'timeStrategy': ['timeStrategy',timeStrategy],
-    'duration': ['duration',parseInt(duration) + 86400],
+    'timeEnd': ['timeEnd',parseInt(timeEnd)],
+    'duration': ['duration',parseInt(duration)],
     'skip': ['skip',skip],
     'isPublic': ['isPublic',public],
-    'timerType': ['timerType',timerType],
-    'endAction': ['endAction',endAction],
-    'timeWarning': ['timeWarning',parseInt(timeWarning) * 1000],
-    'timeDanger': ['timeDanger',parseInt(timeDanger) * 1000],
-    'selectColour': ['colour',selectColour],
+    'timerType': ['timerType',timerType], // Find correct values for function?
+    'endAction': ['endAction',endAction], // Find correct values for function?
+    'timeWarning': ['timeWarning',parseInt(timeWarning)],
+    'timeDanger': ['timeDanger',parseInt(timeDanger)],
+    'selectColour': ['colour',selectColour == 'none' ? '#333':selectColour], // What value to send to get none?
     'pickColour': ['colour','#' +
       toHex(parseInt(pickColour[0] * 255)) +
       toHex(parseInt(pickColour[1] * 255)) +

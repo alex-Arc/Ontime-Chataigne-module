@@ -475,7 +475,6 @@
             "Start Time": "timeStart",
             "Link start": "linkStart",
             "End Time": "timeEnd",
-            "Locked Time": "timeStrategy",
             "Duration": "duration",
             "Skip event": "skip",
             "Public event": "isPublic",
