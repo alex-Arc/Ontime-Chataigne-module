@@ -60,6 +60,18 @@
       "Expected Finish": { "type": "Float", "ui": "time", "readOnly": true },
       "Started At": { "type": "Float", "ui": "time", "readOnly": true },
       "Finished At": { "type": "Float", "ui": "time", "readOnly": true },
+      "Phase": {
+        "type": "Enum",
+        "options": {
+          "-inactive-": "none",
+          "Default": "default",
+          "Warning": "warning",
+          "Danger": "danger",
+          "Overtime": "overtime",
+          "Pending Roll": "pending"
+        },
+        "readOnly": true
+      },
       "Playback": {
         "type": "Enum",
         "options": {
