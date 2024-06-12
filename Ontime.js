@@ -336,11 +336,11 @@ function changeEvent(
     'duration': ['duration',parseInt(duration)],
     'skip': ['skip',skip],
     'isPublic': ['isPublic',public],
-    'timerType': ['timerType',timerType], // Find correct values for function?
-    'endAction': ['endAction',endAction], // Find correct values for function?
+    'timerType': ['timerType',timerType],
+    'endAction': ['endAction',endAction],
     'timeWarning': ['timeWarning',parseInt(timeWarning)],
     'timeDanger': ['timeDanger',parseInt(timeDanger)],
-    'selectColour': ['colour',selectColour == 'none' ? '#333':selectColour], // What value to send to get none?
+    'selectColour': ['colour',selectColour == 'none' ? '':selectColour],
     'pickColour': ['colour','#' +
       toHex(parseInt(pickColour[0] * 255)) +
       toHex(parseInt(pickColour[1] * 255)) +
