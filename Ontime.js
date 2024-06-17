@@ -104,8 +104,14 @@ function cssColors(value) {
   var maybeNamedColor = cssNamedColors[value];
   if (maybeNamedColor != null) {
     return parseInt(maybeNamedColor);
-  } else if (value.length == 7) {
+  } else if (value.length == 4) { // expects #RGB
+    var result = '0xff' + value.substring(1, 2) + '0' + value.substring(2, 3) + '0' + value.substring(3, 4) + '0';
+    return parseInt(result);
+  } else if (value.length == 7) { // expoects ##RRGGBB
     return parseInt(value.replace('#', '0xff'));
+  } else if (value.length == 9) { // expects #RRGGBBAA
+    var result = '0x' + value.substring(7, 9) + value.substring(1, 7);
+    return parseInt(result);
   } else {
     return 0xff303030; // no or invalid colour
   }
@@ -304,52 +310,47 @@ function changeEvent(
   title,
   note,
   cue,
+  timeStart,
+  linkStart,
+  timeEnd,
   duration,
   skip,
   public,
+  timerType,
+  endAction,
+  timeWarning,
+  timeDanger,
   selectColour,
   pickColour,
   writeColour,
   customID,
-  customText,
+  customText
 ) {
-  if (action == 'title') {
-    local.send('{"type":"change", "payload":{"' + id + '":{"title":"' + title + '"}}}');
-  } else if (action == 'note') {
-    local.send('{"type":"change", "payload":{"' + id + '":{"note":"' + note + '"}}}');
-  } else if (action == 'cue') {
-    local.send('{"type":"change", "payload":{"' + id + '":{"cue":"' + cue + '"}}}');
-  } else if (action == 'duration') {
-    duration = parseInt(duration);
-    local.send('{"type":"change", "payload":{"' + id + '":{"duration":' + duration + '}}}');
-  } else if (action == 'skip') {
-    local.send('{"type":"change", "payload":{"' + id + '":{"' + action + '":' + skip + '}}}');
-  } else if (action == 'isPublic') {
-    local.send('{"type":"change", "payload":{"' + id + '":{"isPublic":' + public + '}}}');
-  } else if (action == 'selectColour') {
-    //user selects enumerated value.
-    if (color == 'none') {
-      local.send('{"type":"change", "payload":{"' + id + '":{"colour":""}}}');
-    } else {
-      local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + selectColour + '"}}}'); //using enum
-    }
-  } else if (action == 'pickColour') {
-    script.log('color');
-    var hexColor =
-      '#' +
+  // TODO: a timeout that won't let users spam change requests?
+  var changeAction = {
+    'title': ['title', title],
+    'note': ['note', note],
+    'cue': ['cue',cue],
+    'timeStart': ['timeStart',parseInt(timeStart)],
+    'linkStart': ['linkStart',linkStart],
+    'timeEnd': ['timeEnd',parseInt(timeEnd)],
+    'duration': ['duration',parseInt(duration)],
+    'skip': ['skip',skip],
+    'isPublic': ['isPublic',public],
+    'timerType': ['timerType',timerType],
+    'endAction': ['endAction',endAction],
+    'timeWarning': ['timeWarning',parseInt(timeWarning)],
+    'timeDanger': ['timeDanger',parseInt(timeDanger)],
+    'selectColour': ['colour',selectColour == 'none' ? '':selectColour],
+    'pickColour': ['colour','#' +
       toHex(parseInt(pickColour[0] * 255)) +
       toHex(parseInt(pickColour[1] * 255)) +
       toHex(parseInt(pickColour[2] * 255)) +
-      toHex(parseInt(pickColour[3] * 255));
-
-    script.log(hexColor);
-    local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + hexColor + '"}}}'); //writing value
-  } else if (action == 'writeColour') {
-    //user inputs string
-    local.send('{"type":"change", "payload":{"' + id + '":{"colour":"' + writeColour + '"}}}'); //writing value
-  } else if (action == 'custom') {
-    local.send('{"type":"change", "payload":{"' + id + '":{"custom:' + customID + '":"' + customText + '"}}}');
-  }
+      toHex(parseInt(pickColour[3] * 255))],
+    'writeColour': ['colour',writeColour],
+    'custom': ['custom:'+customID, customText]
+  };
+  local.send('{"type":"change", "payload":{"' + id + '":{"' + changeAction[action][0] + '":"' + changeAction[action][1] + '"}}}');
 }
 
 var cssNamedColors = {

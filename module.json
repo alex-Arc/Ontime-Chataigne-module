@@ -484,8 +484,15 @@
             "Title": "title",
             "Note": "note",
             "Cue name": "cue",
+            "Start Time": "timeStart",
+            "Link start": "linkStart",
+            "End Time": "timeEnd",
             "Duration": "duration",
             "Public event": "isPublic",
+            "Timer type": "timerType",
+            "End action": "endAction",
+            "Warning time": "timeWarning",
+            "Danger time": "timeDanger",
             "Skip event": "skip",
             "Select cue colour": "selectColour",
             "Pick cue colour": "pickColour",
@@ -521,6 +528,42 @@
             "action": "show"
           }
         },
+        "Start time": {
+          "type": "Float",
+          "ui": "time",
+          "min": 0,
+          "max": 86400,
+          "default": 0,
+          "dependency": {
+            "source": "targetChange",
+            "value": "timeStart",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "Link start": {
+          "type": "Boolean",
+          "dependency": {
+            "source": "targetChange",
+            "value": "linkStart",
+            "check": "equals",
+            "action": "show"
+          },
+          "description": "Connect start time to end time of previous event."
+        },
+        "End time": {
+          "type": "Float",
+          "ui": "time",
+          "min": 0,
+          "max": 86400,
+          "default": 0,
+          "dependency": {
+            "source": "targetChange",
+            "value": "timeEnd",
+            "check": "equals",
+            "action": "show"
+          }
+        },
         "Duration": {
           "type": "Float",
           "ui": "time",
@@ -548,6 +591,62 @@
           "dependency": {
             "source": "targetChange",
             "value": "isPublic",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "Timer type": {
+          "type": "Enum",
+          "options": {
+            "Count down": "count-down",
+            "Count up": "count-up",
+            "Time to end": "time-to-end",
+            "Clock": "clock"
+          },
+          "dependency": {
+            "source": "targetChange",
+            "value": "timerType",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "End action": {
+          "type": "Enum",
+          "options": {
+            "None": "none",
+            "Stop": "stop",
+            "Load next": "load-next",
+            "Play next": "play-next"
+          },
+          "dependency": {
+            "source": "targetChange",
+            "value": "endAction",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "Warning time": {
+          "type": "Float",
+          "ui": "time",
+          "min": 0,
+          "max": 86400,
+          "default": 120,
+          "dependency": {
+            "source": "targetChange",
+            "value": "timeWarning",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "Danger time": {
+          "type": "Float",
+          "ui": "time",
+          "min": 0,
+          "max": 86400,
+          "default": 60,
+          "dependency": {
+            "source": "targetChange",
+            "value": "timeDanger",
             "check": "equals",
             "action": "show"
           }
