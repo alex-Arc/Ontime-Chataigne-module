@@ -113,6 +113,13 @@
       "Actual Start": { "type": "Float", "ui": "time", "readOnly": true },
       "Expected End": { "type": "Float", "ui": "time", "readOnly": true }
     },
+    "Current Block": {
+      "type": "Container",
+      "collapsed": true,
+      "id": { "type": "String", "readOnly": true },
+      "Title": { "type": "String", "readOnly": true },
+      "Started At": { "type": "Float", "ui": "time", "readOnly": true }
+    },
     "Current Event": {
       "type": "Container",
       "collapsed": true,
