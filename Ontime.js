@@ -104,12 +104,15 @@ function cssColors(value) {
   var maybeNamedColor = cssNamedColors[value];
   if (maybeNamedColor != null) {
     return parseInt(maybeNamedColor);
-  } else if (value.length == 4) { // expects #RGB
+  } else if (value.length == 4) {
+    // expects #RGB
     var result = '0xff' + value.substring(1, 2) + '0' + value.substring(2, 3) + '0' + value.substring(3, 4) + '0';
     return parseInt(result);
-  } else if (value.length == 7) { // expoects ##RRGGBB
+  } else if (value.length == 7) {
+    // expoects ##RRGGBB
     return parseInt(value.replace('#', '0xff'));
-  } else if (value.length == 9) { // expects #RRGGBBAA
+  } else if (value.length == 9) {
+    // expects #RRGGBBAA
     var result = '0x' + value.substring(7, 9) + value.substring(1, 7);
     return parseInt(result);
   } else {
@@ -213,6 +216,11 @@ function wsMessageReceived(message) {
   } else if (type == 'ontime-publicEventNext') {
     var nextPublicEvent = local.values.nextPublicEvent;
     setEventData(nextPublicEvent, payload);
+  } else if (type == 'ontime-currentBlock') {
+    var currentBlock = local.values.currentBlock;
+    currentBlock.id.set(payload.block.id);
+    currentBlock.title.set(payload.block.title);
+    currentBlock.startedAt.set(millisToFloat(payload.startedAt));
   } else if (type == 'ontime-refetch') {
     script.log('refetch');
   } else if (type == 'ontime-auxtimer1') {
@@ -324,33 +332,38 @@ function changeEvent(
   pickColour,
   writeColour,
   customID,
-  customText
+  customText,
 ) {
   // TODO: a timeout that won't let users spam change requests?
   var changeAction = {
-    'title': ['title', title],
-    'note': ['note', note],
-    'cue': ['cue',cue],
-    'timeStart': ['timeStart',parseInt(timeStart)],
-    'linkStart': ['linkStart',linkStart],
-    'timeEnd': ['timeEnd',parseInt(timeEnd)],
-    'duration': ['duration',parseInt(duration)],
-    'skip': ['skip',skip],
-    'isPublic': ['isPublic',public],
-    'timerType': ['timerType',timerType],
-    'endAction': ['endAction',endAction],
-    'timeWarning': ['timeWarning',parseInt(timeWarning)],
-    'timeDanger': ['timeDanger',parseInt(timeDanger)],
-    'selectColour': ['colour',selectColour == 'none' ? '':selectColour],
-    'pickColour': ['colour','#' +
-      toHex(parseInt(pickColour[0] * 255)) +
-      toHex(parseInt(pickColour[1] * 255)) +
-      toHex(parseInt(pickColour[2] * 255)) +
-      toHex(parseInt(pickColour[3] * 255))],
-    'writeColour': ['colour',writeColour],
-    'custom': ['custom:'+customID, customText]
+    title: ['title', title],
+    note: ['note', note],
+    cue: ['cue', cue],
+    timeStart: ['timeStart', parseInt(timeStart)],
+    linkStart: ['linkStart', linkStart],
+    timeEnd: ['timeEnd', parseInt(timeEnd)],
+    duration: ['duration', parseInt(duration)],
+    skip: ['skip', skip],
+    isPublic: ['isPublic', public],
+    timerType: ['timerType', timerType],
+    endAction: ['endAction', endAction],
+    timeWarning: ['timeWarning', parseInt(timeWarning)],
+    timeDanger: ['timeDanger', parseInt(timeDanger)],
+    selectColour: ['colour', selectColour == 'none' ? '' : selectColour],
+    pickColour: [
+      'colour',
+      '#' +
+        toHex(parseInt(pickColour[0] * 255)) +
+        toHex(parseInt(pickColour[1] * 255)) +
+        toHex(parseInt(pickColour[2] * 255)) +
+        toHex(parseInt(pickColour[3] * 255)),
+    ],
+    writeColour: ['colour', writeColour],
+    custom: ['custom:' + customID, customText],
   };
-  local.send('{"type":"change", "payload":{"' + id + '":{"' + changeAction[action][0] + '":"' + changeAction[action][1] + '"}}}');
+  local.send(
+    '{"type":"change", "payload":{"' + id + '":{"' + changeAction[action][0] + '":"' + changeAction[action][1] + '"}}}',
+  );
 }
 
 var cssNamedColors = {
