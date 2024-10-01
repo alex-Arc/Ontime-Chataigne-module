@@ -91,15 +91,19 @@
         "type": "Container",
         "collapsed": true,
         "Text": { "type": "String", "readOnly": true },
+        "External": { "type": "String", "readOnly": true },
         "Visible": { "type": "Boolean", "readOnly": true },
         "Blink": { "type": "Boolean", "readOnly": true },
-        "Blackout": { "type": "Boolean", "readOnly": true }
-      },
-      "External": {
-        "type": "Container",
-        "collapsed": true,
-        "Text": { "type": "String", "readOnly": true },
-        "Visible": { "type": "Boolean", "readOnly": true }
+        "Blackout": { "type": "Boolean", "readOnly": true },
+        "Secondary Source": {
+          "type": "Enum",
+          "options": {
+            "External": "external",
+            "Aux": "aux",
+            "Off": "off"
+          },
+          "readOnly": true
+        }
       }
     },
     "Runtime": {
@@ -371,7 +375,8 @@
             "Blink Timer": "blinkTimer",
             "Blackout Timer": "blackoutTimer",
             "Set external message": "setExternalMessage",
-            "Show external message": "showExternalMessage"
+            "Show external message": "showExternalMessage",
+            "Show Aux timer": "showAuxTimer"
           },
           "description": "Select action to preform"
         },
@@ -425,6 +430,15 @@
           "dependency": {
             "source": "eventAction",
             "value": "showExternalMessage",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "Display aux timer": {
+          "type": "Boolean",
+          "dependency": {
+            "source": "eventAction",
+            "value": "showAuxTimer",
             "check": "equals",
             "action": "show"
           }
