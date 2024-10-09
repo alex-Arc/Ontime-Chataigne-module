@@ -91,7 +91,6 @@
         "type": "Container",
         "collapsed": true,
         "Text": { "type": "String", "readOnly": true },
-        "External": { "type": "String", "readOnly": true },
         "Visible": { "type": "Boolean", "readOnly": true },
         "Blink": { "type": "Boolean", "readOnly": true },
         "Blackout": { "type": "Boolean", "readOnly": true },
@@ -103,7 +102,8 @@
             "Off": "off"
           },
           "readOnly": true
-        }
+        },
+        "External": { "type": "String", "readOnly": true }
       }
     },
     "Runtime": {
@@ -375,8 +375,7 @@
             "Blink Timer": "blinkTimer",
             "Blackout Timer": "blackoutTimer",
             "Set external message": "setExternalMessage",
-            "Show external message": "showExternalMessage",
-            "Show Aux timer": "showAuxTimer"
+            "Show secondary source": "showSecondarySource"
           },
           "description": "Select action to preform"
         },
@@ -389,7 +388,7 @@
             "action": "show"
           }
         },
-        "Display timer message": {
+        "Show timer message": {
           "type": "Boolean",
           "dependency": {
             "source": "eventAction",
@@ -425,20 +424,16 @@
             "action": "show"
           }
         },
-        "Display external message": {
-          "type": "Boolean",
+        "Show Secondary Source": {
+          "type": "Enum",
+          "options": {
+            "External":"external",
+            "Aux Timer":"aux",
+            "Off":"off"
+          },
           "dependency": {
             "source": "eventAction",
-            "value": "showExternalMessage",
-            "check": "equals",
-            "action": "show"
-          }
-        },
-        "Display aux timer": {
-          "type": "Boolean",
-          "dependency": {
-            "source": "eventAction",
-            "value": "showAuxTimer",
+            "value": "showSecondarySource",
             "check": "equals",
             "action": "show"
           }

@@ -261,6 +261,7 @@ function generalAction(action, offset) {
     if (offset > 0) {
       local.send('{"type":"addtime", "payload":{"add":' + offset + '}}');
     } else if (offset < 0) {
+      offset = offset * -1;
       local.send('{"type":"addtime", "payload":{"remove":' + offset + '}}');
     }
   } else if (action == 'roll' || action == 'stop' || action == 'pause' || action == 'reload') {
@@ -289,8 +290,7 @@ function messageAction(
   blinkTimer,
   blackoutTimer,
   setExternalMessage,
-  showExternalMessage,
-  showAuxTimer,
+  showSecondarySource
 ) {
   if (action == 'setTimerMessage') {
     local.send('{"type":"message", "payload":{"timer":{"text":"' + setTimerMessage + '"}}}');
@@ -302,20 +302,8 @@ function messageAction(
     local.send('{"type":"message", "payload":{"timer":{"blackout":' + blackoutTimer + '}}}');
   } else if (action == 'setExternalMessage') {
     local.send('{"type":"message", "payload":{"external":{"text":"' + setExternalMessage + '"}}}');
-  } else if (action == 'showExternalMessage') {
-    local.send(
-      JSON.stringify({
-        type: 'message',
-        payload: { timer: { secondarySource: showExternalMessage ? 'external' : 'off' } },
-      }),
-    );
-  } else if (action == 'showAuxTimer') {
-    local.send(
-      JSON.stringify({
-        type: 'message',
-        payload: { timer: { secondarySource: showAuxTimer ? 'aux' : 'off' } },
-      }),
-    );
+  } else if (action == 'showSecondarySource') {
+    local.send('{"type":"message", "payload":{"timer":{"secondarySource":"' + showSecondarySource + '"}}}');
   }
 }
 
