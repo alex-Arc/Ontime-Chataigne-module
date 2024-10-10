@@ -3,7 +3,7 @@
   "type": "WebSocket Client",
   "path": "Software",
 
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Module for interacting with ontime",
   "url": "https://github.com/alex-Arc/Ontime-Chataigne-module",
   "downloadURL": "https://github.com/alex-Arc/Ontime-Chataigne-module/archive/refs/heads/main.zip",
