@@ -3,7 +3,7 @@
   "type": "WebSocket Client",
   "path": "Software",
 
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Module for interacting with ontime",
   "url": "https://github.com/alex-Arc/Ontime-Chataigne-module",
   "downloadURL": "https://github.com/alex-Arc/Ontime-Chataigne-module/archive/refs/heads/main.zip",
@@ -93,13 +93,17 @@
         "Text": { "type": "String", "readOnly": true },
         "Visible": { "type": "Boolean", "readOnly": true },
         "Blink": { "type": "Boolean", "readOnly": true },
-        "Blackout": { "type": "Boolean", "readOnly": true }
-      },
-      "External": {
-        "type": "Container",
-        "collapsed": true,
-        "Text": { "type": "String", "readOnly": true },
-        "Visible": { "type": "Boolean", "readOnly": true }
+        "Blackout": { "type": "Boolean", "readOnly": true },
+        "Secondary Source": {
+          "type": "Enum",
+          "options": {
+            "External": "external",
+            "Aux": "aux",
+            "Off": "off"
+          },
+          "readOnly": true
+        },
+        "External": { "type": "String", "readOnly": true }
       }
     },
     "Runtime": {
@@ -371,7 +375,7 @@
             "Blink Timer": "blinkTimer",
             "Blackout Timer": "blackoutTimer",
             "Set external message": "setExternalMessage",
-            "Show external message": "showExternalMessage"
+            "Show secondary source": "showSecondarySource"
           },
           "description": "Select action to preform"
         },
@@ -384,7 +388,7 @@
             "action": "show"
           }
         },
-        "Display timer message": {
+        "Show timer message": {
           "type": "Boolean",
           "dependency": {
             "source": "eventAction",
@@ -420,11 +424,16 @@
             "action": "show"
           }
         },
-        "Display external message": {
-          "type": "Boolean",
+        "Show Secondary Source": {
+          "type": "Enum",
+          "options": {
+            "External":"external",
+            "Aux Timer":"aux",
+            "Off":"off"
+          },
           "dependency": {
             "source": "eventAction",
-            "value": "showExternalMessage",
+            "value": "showSecondarySource",
             "check": "equals",
             "action": "show"
           }

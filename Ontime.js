@@ -185,15 +185,18 @@ function wsMessageReceived(message) {
     timer.startedAt.set(millisToFloat(payload.startedAt));
   } else if (type == 'ontime-message') {
     var messageTimer = local.values.message.timer;
-    var messageExternal = local.values.message.external;
 
     messageTimer.text.set(payload.timer.text);
     messageTimer.visible.set(payload.timer.visible);
     messageTimer.blink.set(payload.timer.blink);
     messageTimer.blackout.set(payload.timer.blackout);
-
-    messageExternal.text.set(payload.external.text);
-    messageExternal.visible.set(payload.external.visible);
+    messageTimer.external.set(payload.external);
+    if (payload.timer.secondarySource === null) {
+      messageTimer.secondarySource.setData('off');
+    } else {
+      messageTimer.secondarySource.setData(payload.timer.secondarySource);
+    }
+    script.log('Payload:' + JSON.stringify(payload.timer.secondarySource));
   } else if (type == 'ontime-runtime') {
     var runtime = local.values.runtime;
 
@@ -258,6 +261,7 @@ function generalAction(action, offset) {
     if (offset > 0) {
       local.send('{"type":"addtime", "payload":{"add":' + offset + '}}');
     } else if (offset < 0) {
+      offset = offset * -1;
       local.send('{"type":"addtime", "payload":{"remove":' + offset + '}}');
     }
   } else if (action == 'roll' || action == 'stop' || action == 'pause' || action == 'reload') {
@@ -286,7 +290,7 @@ function messageAction(
   blinkTimer,
   blackoutTimer,
   setExternalMessage,
-  showExternalMessage,
+  showSecondarySource
 ) {
   if (action == 'setTimerMessage') {
     local.send('{"type":"message", "payload":{"timer":{"text":"' + setTimerMessage + '"}}}');
@@ -298,8 +302,8 @@ function messageAction(
     local.send('{"type":"message", "payload":{"timer":{"blackout":' + blackoutTimer + '}}}');
   } else if (action == 'setExternalMessage') {
     local.send('{"type":"message", "payload":{"external":{"text":"' + setExternalMessage + '"}}}');
-  } else if (action == 'showExternalMessage') {
-    local.send('{"type":"message", "payload":{"external":{"visible":' + showExternalMessage + '}}}');
+  } else if (action == 'showSecondarySource') {
+    local.send('{"type":"message", "payload":{"timer":{"secondarySource":"' + showSecondarySource + '"}}}');
   }
 }
 
