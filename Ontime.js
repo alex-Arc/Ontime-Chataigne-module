@@ -307,11 +307,13 @@ function messageAction(
   }
 }
 
-function auxTimer(index, action, duration, direction) {
+function auxTimer(index, action, duration, direction, change) {
   if (action == 'set') {
     local.send(
-      '{"type":"auxtimer", "payload":{"' + index + '":{"duration":' + duration + ',"direction":"' + direction + '"}}}',
+      '{"type":"auxtimer", "payload":{"' + index + '":{"duration":' + parseInt(duration) + ',"direction":"' + direction + '"}}}',
     );
+  } else if (action == "change") {
+    local.send('{"type":"auxtimer", "payload":{"' + index + '":{"addtime":' + parseInt(change) +'}}}');
   } else if (action == 'start' || action == 'pause' || action == 'stop') {
     local.send('{"type":"auxtimer", "payload":{"' + index + '":"' + action + '"}}');
   }
