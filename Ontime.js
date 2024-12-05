@@ -256,13 +256,13 @@ function wsMessageReceived(message) {
  *
  */
 
-function generalAction(action, offset) {
-  if (action == 'offset') {
-    if (offset > 0) {
-      local.send('{"type":"addtime", "payload":{"add":' + offset + '}}');
-    } else if (offset < 0) {
-      offset = offset * -1;
-      local.send('{"type":"addtime", "payload":{"remove":' + offset + '}}');
+function generalAction(action, addtime) {
+  if (action == 'addtime') {
+    if (addtime > 0) {
+      local.send('{"type":"addtime", "payload":{"add":' + addtime + '}}');
+    } else if (addtime < 0) {
+      addtime = addtime * -1;
+      local.send('{"type":"addtime", "payload":{"remove":' + addtime + '}}');
     }
   } else if (action == 'roll' || action == 'stop' || action == 'pause' || action == 'reload') {
     local.send('{"type":"' + action + '"}');
@@ -307,11 +307,13 @@ function messageAction(
   }
 }
 
-function auxTimer(index, action, duration, direction) {
+function auxTimer(index, action, duration, direction, addtime) {
   if (action == 'set') {
     local.send(
-      '{"type":"auxtimer", "payload":{"' + index + '":{"duration":' + duration + ',"direction":"' + direction + '"}}}',
+      '{"type":"auxtimer", "payload":{"' + index + '":{"duration":' + parseInt(duration) + ',"direction":"' + direction + '"}}}',
     );
+  } else if (action == "addtime") {
+    local.send('{"type":"auxtimer", "payload":{"' + index + '":{"addtime":' + parseInt(addtime) +'}}}');
   } else if (action == 'start' || action == 'pause' || action == 'stop') {
     local.send('{"type":"auxtimer", "payload":{"' + index + '":"' + action + '"}}');
   }

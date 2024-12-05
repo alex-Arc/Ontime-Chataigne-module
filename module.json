@@ -3,7 +3,7 @@
   "type": "WebSocket Client",
   "path": "Software",
 
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Module for interacting with ontime",
   "url": "https://github.com/alex-Arc/Ontime-Chataigne-module",
   "downloadURL": "https://github.com/alex-Arc/Ontime-Chataigne-module/archive/refs/heads/main.zip",
@@ -344,11 +344,11 @@
             "Pause": "pause",
             "Roll": "roll",
             "Stop": "stop",
-            "Offset": "offset"
+            "Add/remove": "addtime"
           },
           "description": "Select action to preform"
         },
-        "Offset": {
+        "Add/remove": {
           "type": "Float",
           "ui": "time",
           "min": -72000,
@@ -357,7 +357,7 @@
           "description": "Offset current counter",
           "dependency": {
             "source": "generalAction",
-            "value": "offset",
+            "value": "addtime",
             "check": "equals",
             "action": "show"
           }
@@ -456,7 +456,8 @@
             "Set": "set",
             "Start": "start",
             "Pause": "pause",
-            "Stop": "stop"
+            "Stop": "stop",
+            "Add/remove": "addtime"
           }
         },
         "Timer": {
@@ -481,6 +482,19 @@
           "dependency": {
             "source": "action",
             "value": "set",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "Add/remove": {
+          "type": "Float",
+          "ui": "time",
+          "default": 0,
+          "min":-36000,
+          "max":36000,
+          "dependency": {
+            "source": "action",
+            "value": "addtime",
             "check": "equals",
             "action": "show"
           }
