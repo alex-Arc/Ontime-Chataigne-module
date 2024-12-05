@@ -344,11 +344,11 @@
             "Pause": "pause",
             "Roll": "roll",
             "Stop": "stop",
-            "Offset": "offset"
+            "Add/remove": "addtime"
           },
           "description": "Select action to preform"
         },
-        "Offset": {
+        "Add/remove": {
           "type": "Float",
           "ui": "time",
           "min": -72000,
@@ -357,7 +357,7 @@
           "description": "Offset current counter",
           "dependency": {
             "source": "generalAction",
-            "value": "offset",
+            "value": "addtime",
             "check": "equals",
             "action": "show"
           }
@@ -457,7 +457,7 @@
             "Start": "start",
             "Pause": "pause",
             "Stop": "stop",
-            "Change": "change"
+            "Add/remove": "addtime"
           }
         },
         "Timer": {
@@ -486,7 +486,7 @@
             "action": "show"
           }
         },
-        "Change": {
+        "Add/remove": {
           "type": "Float",
           "ui": "time",
           "default": 0,
@@ -494,7 +494,7 @@
           "max":36000,
           "dependency": {
             "source": "action",
-            "value": "change",
+            "value": "addtime",
             "check": "equals",
             "action": "show"
           }
