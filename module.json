@@ -344,7 +344,8 @@
             "Pause": "pause",
             "Roll": "roll",
             "Stop": "stop",
-            "Add/remove": "addtime"
+            "Add/remove": "addtime",
+            "Absolute/Relative":"rundownMode"
           },
           "description": "Select action to preform"
         },
@@ -358,6 +359,20 @@
           "dependency": {
             "source": "generalAction",
             "value": "addtime",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "Absolute/relative": {
+          "type": "Enum",
+          "options": {
+            "Absolute":"absolute",
+            "Relative":"relative"
+          },
+          "description": "Change rundown mode",
+          "dependency": {
+            "source": "generalAction",
+            "value": "rundownMode",
             "check": "equals",
             "action": "show"
           }
