@@ -256,7 +256,7 @@ function wsMessageReceived(message) {
  *
  */
 
-function generalAction(action, addtime) {
+function generalAction(action, addtime, offsetMode) {
   if (action == 'addtime') {
     if (addtime > 0) {
       local.send('{"type":"addtime", "payload":{"add":' + addtime + '}}');
@@ -274,6 +274,8 @@ function generalAction(action, addtime) {
     local.send('{"type":"load", "payload":"next"}');
   } else if (action == 'loadPrevious') {
     local.send('{"type":"load", "payload":"previous"}');
+  } else if (action == 'offsetMode') {
+    local.send('{"type":"offsetmode", "payload":"'+ offsetMode +'"}');
   } else {
     local.send('{"type":"' + action + '"}');
   }

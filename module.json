@@ -3,7 +3,7 @@
   "type": "WebSocket Client",
   "path": "Software",
 
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Module for interacting with ontime",
   "url": "https://github.com/alex-Arc/Ontime-Chataigne-module",
   "downloadURL": "https://github.com/alex-Arc/Ontime-Chataigne-module/archive/refs/heads/main.zip",
@@ -344,7 +344,8 @@
             "Pause": "pause",
             "Roll": "roll",
             "Stop": "stop",
-            "Add/remove": "addtime"
+            "Add/remove": "addtime",
+            "Absolute/Relative":"offsetMode"
           },
           "description": "Select action to preform"
         },
@@ -358,6 +359,20 @@
           "dependency": {
             "source": "generalAction",
             "value": "addtime",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "Absolute/relative": {
+          "type": "Enum",
+          "options": {
+            "Absolute":"absolute",
+            "Relative":"relative"
+          },
+          "description": "Change offset mode",
+          "dependency": {
+            "source": "generalAction",
+            "value": "offsetMode",
             "check": "equals",
             "action": "show"
           }
