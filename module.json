@@ -3,8 +3,8 @@
   "type": "WebSocket Client",
   "path": "Software",
 
-  "version": "0.5.0",
-  "description": "Module for interacting with ontime",
+  "version": "0.6.0",
+  "description": "!Breaking changes, will not work with v3!\n\nModule for interacting with Ontime v4",
   "url": "https://github.com/alex-Arc/Ontime-Chataigne-module",
   "downloadURL": "https://github.com/alex-Arc/Ontime-Chataigne-module/archive/refs/heads/main.zip",
 
@@ -33,6 +33,10 @@
     "Client name": {
       "type": "String",
       "readOnly": true
+    },
+    "Client Id": {
+      "type": "String",
+      "readOnly": true
     }
   },
 
@@ -59,7 +63,6 @@
       "Elapsed": { "type": "Float", "ui": "time", "readOnly": true },
       "Expected Finish": { "type": "Float", "ui": "time", "readOnly": true },
       "Started At": { "type": "Float", "ui": "time", "readOnly": true },
-      "Finished At": { "type": "Float", "ui": "time", "readOnly": true },
       "Phase": {
         "type": "Enum",
         "options": {
@@ -97,32 +100,57 @@
         "Secondary Source": {
           "type": "Enum",
           "options": {
-            "External": "external",
-            "Aux": "aux",
+            "Secondary": "secondary",
+            "Aux1": "aux1",
+            "Aux2": "aux2",
+            "Aux3": "aux3",
             "Off": "off"
           },
           "readOnly": true
         },
-        "External": { "type": "String", "readOnly": true }
+        "Secondary": { "type": "String", "readOnly": true }
       }
     },
-    "Runtime": {
+    "Rundown": {
       "type": "Container",
       "collapsed": true,
-      "Current Event Index": { "type": "Integer", "readOnly": true, "description": "All events, excluding skipped" },
+      "Selected Event Index": { "type": "Integer", "readOnly": true, "description": "All events, excluding skipped" },
       "Num Events": { "type": "Integer", "readOnly": true },
-      "Offset": { "type": "Float", "ui": "time", "readOnly": true },
       "Planned Start": { "type": "Float", "ui": "time", "readOnly": true },
       "Planned End": { "type": "Float", "ui": "time", "readOnly": true },
       "Actual Start": { "type": "Float", "ui": "time", "readOnly": true },
-      "Expected End": { "type": "Float", "ui": "time", "readOnly": true }
+      "Actual Group Start": { "type": "Float", "ui": "time", "readOnly": true },
+      "Current Day": { "type": "Integer", "readOnly": true }
     },
-    "Current Block": {
+    "Offset": {
+      "type": "Container",
+      "collapsed": true,
+      "Absolute": { "type": "Float", "ui": "time", "readOnly": true },
+      "Relative": { "type": "Float", "ui": "time", "readOnly": true },
+      "Mode": {
+        "type": "Enum",
+        "options": {
+          "Absolute": "absolute",
+          "Relative": "relative"
+        },
+        "readOnly": true
+      },
+      "Expected Flag Start": { "type": "Float", "ui": "time", "readOnly": true },
+      "Expected Group End": { "type": "Float", "ui": "time", "readOnly": true },
+      "Expected Rundown End": { "type": "Float", "ui": "time", "readOnly": true }
+    },
+    "Current Group": {
       "type": "Container",
       "collapsed": true,
       "id": { "type": "String", "readOnly": true },
       "Title": { "type": "String", "readOnly": true },
-      "Started At": { "type": "Float", "ui": "time", "readOnly": true }
+      "Note": { "type": "String", "readOnly": true },
+      "Target Duration": { "type": "Float", "ui": "time", "readOnly": true },
+      "Colour": { "type": "Color", "readOnly": true },
+      "Start": { "type": "Float", "ui": "time", "readOnly": true },
+      "End": { "type": "Float", "ui": "time", "readOnly": true },
+      "Duration": { "type": "Float", "ui": "time", "readOnly": true },
+      "First Event Linked": { "type": "Boolean", "readOnly": true }
     },
     "Current Event": {
       "type": "Container",
@@ -135,7 +163,8 @@
       "Start": { "type": "Float", "ui": "time", "readOnly": true },
       "End": { "type": "Float", "ui": "time", "readOnly": true },
       "Duration": { "type": "Float", "ui": "time", "readOnly": true },
-      "Public": { "type": "Boolean", "readOnly": true },
+      "Count to end": { "type": "Boolean", "readOnly": true },
+      "Flag": { "type": "Boolean", "readOnly": true },
       "Skip": { "type": "Boolean", "readOnly": true },
       "Danger": { "type": "Float", "ui": "time", "readOnly": true },
       "Warning": { "type": "Float", "ui": "time", "readOnly": true },
@@ -156,8 +185,8 @@
           " ": "",
           "Count down": "count-down",
           "Count up": "count-up",
-          "Time to end": "time-to-end",
-          "Clock": "clock"
+          "Clock": "clock",
+          "None": "none"
         },
         "readOnly": true
       }
@@ -173,7 +202,8 @@
       "Start": { "type": "Float", "ui": "time", "readOnly": true },
       "End": { "type": "Float", "ui": "time", "readOnly": true },
       "Duration": { "type": "Float", "ui": "time", "readOnly": true },
-      "Public": { "type": "Boolean", "readOnly": true },
+      "Count to end": { "type": "Boolean", "readOnly": true },
+      "Flag": { "type": "Boolean", "readOnly": true },
       "Skip": { "type": "Boolean", "readOnly": true },
       "Danger": { "type": "Float", "ui": "time", "readOnly": true },
       "Warning": { "type": "Float", "ui": "time", "readOnly": true },
@@ -194,13 +224,13 @@
           " ": "",
           "Count down": "count-down",
           "Count up": "count-up",
-          "Time to end": "time-to-end",
-          "Clock": "clock"
+          "Clock": "clock",
+          "None": "none"
         },
         "readOnly": true
       }
     },
-    "Current Public Event": {
+    "Flag Event": {
       "type": "Container",
       "collapsed": true,
       "id": { "type": "String", "readOnly": true },
@@ -211,7 +241,8 @@
       "Start": { "type": "Float", "ui": "time", "readOnly": true },
       "End": { "type": "Float", "ui": "time", "readOnly": true },
       "Duration": { "type": "Float", "ui": "time", "readOnly": true },
-      "Public": { "type": "Boolean", "readOnly": true },
+      "Count to end": { "type": "Boolean", "readOnly": true },
+      "Flag": { "type": "Boolean", "readOnly": true },
       "Skip": { "type": "Boolean", "readOnly": true },
       "Danger": { "type": "Float", "ui": "time", "readOnly": true },
       "Warning": { "type": "Float", "ui": "time", "readOnly": true },
@@ -232,51 +263,61 @@
           " ": "",
           "Count down": "count-down",
           "Count up": "count-up",
-          "Time to end": "time-to-end",
-          "Clock": "clock"
-        },
-        "readOnly": true
-      }
-    },
-    "Next Public Event": {
-      "type": "Container",
-      "collapsed": true,
-      "id": { "type": "String", "readOnly": true },
-      "Title": { "type": "String", "readOnly": true },
-      "Cue": { "type": "String", "readOnly": true },
-      "Colour": { "type": "Color", "readOnly": true },
-      "Note": { "type": "String", "readOnly": true },
-      "Start": { "type": "Float", "ui": "time", "readOnly": true },
-      "End": { "type": "Float", "ui": "time", "readOnly": true },
-      "Duration": { "type": "Float", "ui": "time", "readOnly": true },
-      "Public": { "type": "Boolean", "readOnly": true },
-      "Skip": { "type": "Boolean", "readOnly": true },
-      "Danger": { "type": "Float", "ui": "time", "readOnly": true },
-      "Warning": { "type": "Float", "ui": "time", "readOnly": true },
-      "End Action": {
-        "type": "Enum",
-        "options": {
-          " ": "",
-          "None": "none",
-          "Stop": "stop",
-          "Load next": "load-next",
-          "Play next": "play-next"
-        },
-        "readOnly": true
-      },
-      "Timer Type": {
-        "type": "Enum",
-        "options": {
-          " ": "",
-          "Count down": "count-down",
-          "Count up": "count-up",
-          "Time to end": "time-to-end",
-          "Clock": "clock"
+          "Clock": "clock",
+          "None": "none"
         },
         "readOnly": true
       }
     },
     "Aux Timer 1": {
+      "type": "Container",
+      "collapsed": true,
+      "Duration": { "type": "Float", "ui": "time", "readOnly": true },
+      "Current": { "type": "Float", "ui": "time", "readOnly": true },
+      "Playback": {
+        "type": "Enum",
+        "options": {
+          "-inactive-": "",
+          "Start": "start",
+          "Pause": "pause",
+          "Stop": "stop"
+        },
+        "readOnly": true
+      },
+      "Direction": {
+        "type": "Enum",
+        "options": {
+          "Count down": "count-down",
+          "Count up": "count-up"
+        },
+        "readOnly": true
+      }
+    },
+    "Aux Timer 2": {
+      "type": "Container",
+      "collapsed": true,
+      "Duration": { "type": "Float", "ui": "time", "readOnly": true },
+      "Current": { "type": "Float", "ui": "time", "readOnly": true },
+      "Playback": {
+        "type": "Enum",
+        "options": {
+          "-inactive-": "",
+          "Start": "start",
+          "Pause": "pause",
+          "Stop": "stop"
+        },
+        "readOnly": true
+      },
+      "Direction": {
+        "type": "Enum",
+        "options": {
+          "Count down": "count-down",
+          "Count up": "count-up"
+        },
+        "readOnly": true
+      }
+    },
+    "Aux Timer 3": {
       "type": "Container",
       "collapsed": true,
       "Duration": { "type": "Float", "ui": "time", "readOnly": true },
@@ -442,8 +483,10 @@
         "Show Secondary Source": {
           "type": "Enum",
           "options": {
-            "External":"external",
-            "Aux Timer":"aux",
+            "Secondary":"secondary",
+            "Aux Timer 1":"aux1",
+            "Aux Timer 2":"aux2",
+            "Aux Timer 3":"aux3",
             "Off":"off"
           },
           "dependency": {
@@ -462,8 +505,7 @@
           "type": "Integer",
           "default": 1,
           "min": 1,
-          "max": 10,
-          "readOnly": true
+          "max": 3
         },
         "Action": {
           "type": "Enum",
@@ -533,12 +575,13 @@
             "Link start": "linkStart",
             "End Time": "timeEnd",
             "Duration": "duration",
-            "Public event": "isPublic",
             "Timer type": "timerType",
             "End action": "endAction",
+            "Count to End": "countToEnd",
             "Warning time": "timeWarning",
             "Danger time": "timeDanger",
             "Skip event": "skip",
+            "Flag event": "flag",
             "Select cue colour": "selectColour",
             "Pick cue colour": "pickColour",
             "Write cue colour": "writeColour",
@@ -631,11 +674,11 @@
             "action": "show"
           }
         },
-        "Public": {
+        "Flag event": {
           "type": "Boolean",
           "dependency": {
             "source": "targetChange",
-            "value": "isPublic",
+            "value": "flag",
             "check": "equals",
             "action": "show"
           }
@@ -645,8 +688,8 @@
           "options": {
             "Count down": "count-down",
             "Count up": "count-up",
-            "Time to end": "time-to-end",
-            "Clock": "clock"
+            "Clock": "clock",
+            "None": "none"
           },
           "dependency": {
             "source": "targetChange",
@@ -659,13 +702,21 @@
           "type": "Enum",
           "options": {
             "None": "none",
-            "Stop": "stop",
             "Load next": "load-next",
             "Play next": "play-next"
           },
           "dependency": {
             "source": "targetChange",
             "value": "endAction",
+            "check": "equals",
+            "action": "show"
+          }
+        },
+        "Count to end": {
+          "type": "Boolean",
+          "dependency": {
+            "source": "targetChange",
+            "value": "countToEnd",
             "check": "equals",
             "action": "show"
           }

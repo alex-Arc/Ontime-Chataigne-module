@@ -1,5 +1,5 @@
 function init() {
-  local.send('{"type":"version"}');
+  local.send('{"tag":"version"}');
 }
 
 function moduleParameterChanged(param) {
@@ -7,9 +7,10 @@ function moduleParameterChanged(param) {
   if (param.name == 'connected') {
     script.log('isConnected:' + param.get());
     if (param.get()) {
-      local.send('{"type":"version"}');
+      local.send('{"tag":"version"}');
     } else {
       local.parameters.ontimeVersion.set('- not connected -');
+      local.parameters.clientId.set('- not connected -');
       local.parameters.clientName.set('- not connected -');
     }
   } else {
@@ -94,7 +95,23 @@ function millisToFloat(millis) {
     return 0;
   }
 }
-
+/**
+ *
+ * @param {number} millis
+ * @returns {float}
+ */
+function floatToMillis(value) {
+  if (value) {
+    var millis = value;
+    if (local.parameters.increasedPrecision.get() == false) {
+      return trunc(value) * 1000;
+    } else {
+      return value * 1000;
+    }
+  } else {
+    return 0;
+  }
+}
 /**
  * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/named-color css colours}
  * @param {string} value
@@ -134,8 +151,9 @@ function setEventData(eventObject, payload) {
     eventObject.duration.set(millisToFloat(payload.duration));
     eventObject.endAction.setData(payload.endAction);
     eventObject.timerType.setData(payload.timerType);
-    eventObject.public.set(payload.isPublic);
     eventObject.skip.set(payload.skip);
+    eventObject.flag.set(payload.flag);
+    eventObject.countToEnd.set(payload.countToEnd);
     eventObject.note.set(payload.note);
     eventObject.colour.set(cssColors(payload.colour));
     eventObject.cue.set(payload.cue);
@@ -150,8 +168,9 @@ function setEventData(eventObject, payload) {
     eventObject.duration.set(0);
     eventObject.endAction.setData('');
     eventObject.timerType.setData('');
-    eventObject.public.set(false);
     eventObject.skip.set(false);
+    eventObject.flag.set(false);
+    eventObject.countToEnd.set(false);
     eventObject.note.set('');
     eventObject.colour.set(0x00000000);
     eventObject.cue.set('');
@@ -161,92 +180,154 @@ function setEventData(eventObject, payload) {
   }
 }
 
+/**
+ * inserts ontime aux timer data into chataigne container
+ * @param {chataigne_container} auxTimerObject
+ * @param {ontime_auxtimer} payload
+ */
+function setAuxTimerData(auxTimerObject, payload) {
+  if (payload) {
+    auxTimerObject.duration.set(millisToFloat(payload.duration));
+    auxTimerObject.current.set(millisToFloat(payload.current));
+    auxTimerObject.playback.setData(payload ? payload.playback : '');
+    auxTimerObject.direction.setData(payload.direction);
+  } else {
+    auxTimerObject.duration.set(0);
+    auxTimerObject.current.set(0);
+    auxTimerObject.playback.setData('');
+    auxTimerObject.direction.setData('');
+  }
+}
+
+/**
+ * inserts ontime group data into chataigne container
+ * @param {chataigne_container} groupObject
+ * @param {ontime_group} payload
+ */
+function setGroupData(groupObject, payload) {
+  if (payload) {
+    groupObject.id.set(payload.id);
+    groupObject.title.set(payload.title);
+    groupObject.note.set(payload.note);
+    groupObject.targetDuration.set(millisToFloat(payload.targetDuration));
+    groupObject.colour.set(cssColors(payload.colour));
+    groupObject.start.set(millisToFloat(payload.timeStart));
+    groupObject.end.set(millisToFloat(payload.timeEnd));
+    groupObject.duration.set(millisToFloat(payload.duration));
+    groupObject.firstEventLinked.set(payload.isFirstLinked);
+  } else {
+    groupObject.id.set('');
+    groupObject.title.set('');
+    groupObject.note.set('');
+    groupObject.targetDuration.set(0);
+    groupObject.colour.set(0x00000000);
+    groupObject.start.set(0);
+    groupObject.end.set(0);
+    groupObject.duration.set(0);
+    groupObject.firstEventLinked.set(false);
+  }
+}
+
 function wsMessageReceived(message) {
   message = JSON.parse(message);
-  var type = message.type;
+  var tag = message.tag;
   var payload = message.payload;
-
-  if (type == 'ontime') {
-  } else if (type == 'ontime-clock') {
-    local.values.clock.set(millisToFloat(payload));
-  } else if (type == 'ontime-onAir') {
-    local.values.onAir.set(payload);
-  } else if (type == 'ontime-timer') {
-    var timer = local.values.mainTimer;
-
-    timer.addedTime.set(millisToFloat(payload.addedTime));
-    timer.current.set(millisToFloat(payload.current));
-    timer.duration.set(millisToFloat(payload.duration));
-    timer.elapsed.set(millisToFloat(payload.elapsed));
-    timer.expectedFinish.set(millisToFloat(payload.expectedFinish));
-    timer.finishedAt.set(millisToFloat(payload.finishedAt));
-    timer.phase.setData(payload.phase);
-    timer.playback.setData(payload.playback);
-    timer.startedAt.set(millisToFloat(payload.startedAt));
-  } else if (type == 'ontime-message') {
-    var messageTimer = local.values.message.timer;
-
-    messageTimer.text.set(payload.timer.text);
-    messageTimer.visible.set(payload.timer.visible);
-    messageTimer.blink.set(payload.timer.blink);
-    messageTimer.blackout.set(payload.timer.blackout);
-    messageTimer.external.set(payload.external);
-    if (payload.timer.secondarySource === null) {
-      messageTimer.secondarySource.setData('off');
-    } else {
-      messageTimer.secondarySource.setData(payload.timer.secondarySource);
+  
+  if (tag == 'runtime-data') {
+    if (payload.clock) {
+      local.values.clock.set(millisToFloat(payload.clock));
     }
-    script.log('Payload:' + JSON.stringify(payload.timer.secondarySource));
-  } else if (type == 'ontime-runtime') {
-    var runtime = local.values.runtime;
+    if (payload.timer) {
+      var timer = local.values.mainTimer;
 
-    runtime.currentEventIndex.set(payload.selectedEventIndex === null ? 0 : payload.selectedEventIndex + 1); // Off by 1, 0 when inactive
-    runtime.numEvents.set(payload.numEvents);
-    runtime.offset.set(millisToFloat(payload.offset));
-    runtime.plannedStart.set(millisToFloat(payload.plannedStart));
-    runtime.plannedEnd.set(millisToFloat(payload.plannedEnd));
-    runtime.actualStart.set(millisToFloat(payload.actualStart));
-    runtime.expectedEnd.set(millisToFloat(payload.expectedEnd));
-  } else if (type == 'ontime-eventNow') {
-    var currentEvent = local.values.currentEvent;
-    setEventData(currentEvent, payload);
-  } else if (type == 'ontime-eventNext') {
-    var nextEvent = local.values.nextEvent;
-    setEventData(nextEvent, payload);
-  } else if (type == 'ontime-publicEventNow') {
-    var currentPublicEvent = local.values.currentPublicEvent;
-    setEventData(currentPublicEvent, payload);
-  } else if (type == 'ontime-publicEventNext') {
-    var nextPublicEvent = local.values.nextPublicEvent;
-    setEventData(nextPublicEvent, payload);
-  } else if (type == 'ontime-currentBlock') {
-    var currentBlock = local.values.currentBlock;
-    currentBlock.id.set(payload.block.id);
-    currentBlock.title.set(payload.block.title);
-    currentBlock.startedAt.set(millisToFloat(payload.startedAt));
-  } else if (type == 'ontime-refetch') {
-    script.log('refetch');
-  } else if (type == 'ontime-auxtimer1') {
-    // TODO: ability to label aux timers and prepare ability to have more than one?
-    var auxTimer = local.values.auxTimer1;
-    auxTimer.duration.set(millisToFloat(payload.duration));
-    auxTimer.current.set(millisToFloat(payload.current));
-    auxTimer.playback.setData(payload ? payload.playback : '');
-    auxTimer.direction.setData(payload.direction);
-  } else if (type == 'poll') {
-    script.log('poll');
-  } else if (type == 'version') {
+      timer.addedTime.set(millisToFloat(payload.timer.addedTime));
+      timer.current.set(millisToFloat(payload.timer.current));
+      timer.duration.set(millisToFloat(payload.timer.duration));
+      timer.elapsed.set(millisToFloat(payload.timer.elapsed));
+      timer.expectedFinish.set(millisToFloat(payload.timer.expectedFinish));
+      timer.phase.setData(payload.timer.phase);
+      timer.playback.setData(payload.timer.playback);
+      timer.startedAt.set(millisToFloat(payload.timer.startedAt));
+    }
+    if (payload.message) {
+      var messageTimer = local.values.message.timer;
+
+      messageTimer.text.set(payload.message.timer.text);
+      messageTimer.visible.set(payload.message.timer.visible);
+      messageTimer.blink.set(payload.message.timer.blink);
+      messageTimer.blackout.set(payload.message.timer.blackout);
+      messageTimer.secondary.set(payload.message.secondary);
+      if (payload.message.timer.secondarySource === null) {
+        messageTimer.secondarySource.setData('off');
+      } else {
+        messageTimer.secondarySource.setData(payload.message.timer.secondarySource);
+      }
+      script.log('Payload:' + JSON.stringify(payload.message.timer.secondarySource));
+    }
+    if (payload.rundown) {
+      var rundown = local.values.rundown;
+
+      rundown.selectedEventIndex.set(payload.rundown.selectedEventIndex === null ? 0 : payload.rundown.selectedEventIndex + 1); // Off by 1, 0 when inactive
+      rundown.numEvents.set(payload.rundown.numEvents);
+      rundown.plannedStart.set(millisToFloat(payload.rundown.plannedStart));
+      rundown.plannedEnd.set(millisToFloat(payload.rundown.plannedEnd));
+      rundown.actualStart.set(millisToFloat(payload.rundown.actualStart));
+      rundown.actualGroupStart.set(millisToFloat(payload.rundown.actualGroupStart));
+      rundown.currentDay.set(millisToFloat(payload.rundown.currentDay));
+    }
+    if (payload.offset) {
+      var offset = local.values.offset;
+
+      offset.absolute.set(millisToFloat(payload.offset.absolute));
+      offset.relative.set(millisToFloat(payload.offset.relative));
+      offset.mode.setData(payload.offset.mode);
+      offset.expectedFlagStart.set(millisToFloat(payload.offset.expectedFlagStart));
+      offset.expectedGroupEnd.set(millisToFloat(payload.offset.expectedGroupEnd));
+      offset.expectedRundownEnd.set(millisToFloat(payload.offset.expectedRundownEnd));
+    }
+    if (typeof payload.eventNow !== 'undefined') {
+      var currentEvent = local.values.currentEvent;
+      setEventData(currentEvent, payload.eventNow);
+    }
+    if (typeof payload.eventNext !== 'undefined') {
+      var nextEvent = local.values.nextEvent;
+      setEventData(nextEvent, payload.eventNext);
+    }
+    if (typeof payload.eventFlag !== 'undefined') {
+      var nextEvent = local.values.flagEvent;
+      setEventData(nextEvent, payload.eventFlag);
+    }
+    if (typeof payload.groupNow !== 'undefined') {
+      var currentGroup = local.values.currentGroup;
+      setGroupData(currentGroup, payload.groupNow);
+    }
+    if (payload.auxtimer1) {
+      var auxTimer1 = local.values.auxTimer1;
+      setAuxTimerData(auxTimer1, payload.auxtimer1);
+    }
+    if (payload.auxtimer2) {
+      var auxTimer2 = local.values.auxTimer2;
+      setAuxTimerData(auxTimer2, payload.auxtimer2);
+    }
+    if (payload.auxtimer3) {
+      var auxTimer3 = local.values.auxTimer3;
+      setAuxTimerData(auxTimer3, payload.auxtimer3);
+    }
+  } else if (tag == 'version') {
     local.parameters.ontimeVersion.set(payload);
-  } else if (type == 'client-name') {
-    local.parameters.clientName.set(payload);
-  } else if (type == 'ontime-log') {
+  } else if (tag == 'client-init') {
+    local.parameters.clientId.set(payload.clientId);
+    local.parameters.clientName.set(payload.clientName);
+  } else if (tag == 'refetch') {
+    script.log('refetch target: ' + payload.target);
+  } else if (tag == 'log') {
     if (payload.level == 'ERROR') {
       script.logError(payload.id + ':' + payload.origin + ' : ' + payload.text);
     } else {
-      script.log('type received: ' + type + '\nPayload:' + JSON.stringify(payload));
+      script.log('tag received: ' + tag + '\nPayload:' + JSON.stringify(payload));
     }
   } else {
-    script.log('type received: ' + type + '\nPayload:' + JSON.stringify(payload));
+    script.log('tag received: ' + tag + '\nPayload:' + JSON.stringify(payload));
   }
 }
 
@@ -258,31 +339,26 @@ function wsMessageReceived(message) {
 
 function generalAction(action, addtime, offsetMode) {
   if (action == 'addtime') {
-    if (addtime > 0) {
-      local.send('{"type":"addtime", "payload":{"add":' + addtime + '}}');
-    } else if (addtime < 0) {
-      addtime = addtime * -1;
-      local.send('{"type":"addtime", "payload":{"remove":' + addtime + '}}');
-    }
+      local.send('{"tag":"addtime", "payload":{"add":' + floatToMillis(addtime) + '}}');
   } else if (action == 'roll' || action == 'stop' || action == 'pause' || action == 'reload') {
-    local.send('{"type":"' + action + '"}');
+    local.send('{"tag":"' + action + '"}');
   } else if (action == 'startNext') {
-    local.send('{"type":"start", "payload":"next"}');
+    local.send('{"tag":"start", "payload":"next"}');
   } else if (action == 'startPrevious') {
-    local.send('{"type":"start", "payload":"previous"}');
+    local.send('{"tag":"start", "payload":"previous"}');
   } else if (action == 'loadNext') {
-    local.send('{"type":"load", "payload":"next"}');
+    local.send('{"tag":"load", "payload":"next"}');
   } else if (action == 'loadPrevious') {
-    local.send('{"type":"load", "payload":"previous"}');
+    local.send('{"tag":"load", "payload":"previous"}');
   } else if (action == 'offsetMode') {
-    local.send('{"type":"offsetmode", "payload":"'+ offsetMode +'"}');
+    local.send('{"tag":"offsetmode", "payload":"'+ offsetMode +'"}');
   } else {
-    local.send('{"type":"' + action + '"}');
+    local.send('{"tag":"' + action + '"}');
   }
 }
 
 function eventAction(type, id, action) {
-  local.send('{"type":"' + action + '","payload":{ "' + type + '":"' + id + '"}}');
+  local.send('{"tag":"' + action + '","payload":{ "' + type + '":"' + id + '"}}');
 }
 
 function messageAction(
@@ -295,29 +371,28 @@ function messageAction(
   showSecondarySource
 ) {
   if (action == 'setTimerMessage') {
-    local.send('{"type":"message", "payload":{"timer":{"text":"' + setTimerMessage + '"}}}');
+    local.send('{"tag":"message", "payload":{"timer":{"text":"' + setTimerMessage + '"}}}');
   } else if (action == 'showTimerMessage') {
-    local.send('{"type":"message", "payload":{"timer":{"visible":' + showTimerMessage + '}}}');
+    local.send('{"tag":"message", "payload":{"timer":{"visible":' + showTimerMessage + '}}}');
   } else if (action == 'blinkTimer') {
-    local.send('{"type":"message", "payload":{"timer":{"blink":' + blinkTimer + '}}}');
+    local.send('{"tag":"message", "payload":{"timer":{"blink":' + blinkTimer + '}}}');
   } else if (action == 'blackoutTimer') {
-    local.send('{"type":"message", "payload":{"timer":{"blackout":' + blackoutTimer + '}}}');
+    local.send('{"tag":"message", "payload":{"timer":{"blackout":' + blackoutTimer + '}}}');
   } else if (action == 'setExternalMessage') {
-    local.send('{"type":"message", "payload":{"external":{"text":"' + setExternalMessage + '"}}}');
+    local.send('{"tag":"message", "payload":{"secondary":"' + setExternalMessage + '"}}');
   } else if (action == 'showSecondarySource') {
-    local.send('{"type":"message", "payload":{"timer":{"secondarySource":"' + showSecondarySource + '"}}}');
+    local.send('{"tag":"message", "payload":{"timer":{"secondarySource":"' + showSecondarySource + '"}}}');
   }
 }
 
 function auxTimer(index, action, duration, direction, addtime) {
   if (action == 'set') {
-    local.send(
-      '{"type":"auxtimer", "payload":{"' + index + '":{"duration":' + parseInt(duration) + ',"direction":"' + direction + '"}}}',
-    );
+    local.send( '{"tag":"auxtimer", "payload":{"' + index + '":{"duration":' + floatToMillis(duration) + '}}}' );
+    local.send( '{"tag":"auxtimer", "payload":{"' + index + '":{"direction":"' + direction + '"}}}' );
   } else if (action == "addtime") {
-    local.send('{"type":"auxtimer", "payload":{"' + index + '":{"addtime":' + parseInt(addtime) +'}}}');
+    local.send('{"tag":"auxtimer", "payload":{"' + index + '":{"addtime":' + floatToMillis(addtime) +'}}}');
   } else if (action == 'start' || action == 'pause' || action == 'stop') {
-    local.send('{"type":"auxtimer", "payload":{"' + index + '":"' + action + '"}}');
+    local.send('{"tag":"auxtimer", "payload":{"' + index + '":"' + action + '"}}');
   }
 }
 function changeEvent(
@@ -331,9 +406,10 @@ function changeEvent(
   timeEnd,
   duration,
   skip,
-  public,
+  flag,
   timerType,
   endAction,
+  countToEnd,
   timeWarning,
   timeDanger,
   selectColour,
@@ -347,16 +423,17 @@ function changeEvent(
     title: ['title', title],
     note: ['note', note],
     cue: ['cue', cue],
-    timeStart: ['timeStart', parseInt(timeStart)],
+    timeStart: ['timeStart', floatToMillis(timeStart)],
     linkStart: ['linkStart', linkStart],
-    timeEnd: ['timeEnd', parseInt(timeEnd)],
-    duration: ['duration', parseInt(duration)],
+    timeEnd: ['timeEnd', floatToMillis(timeEnd)],
+    duration: ['duration', floatToMillis(duration)],
     skip: ['skip', skip],
-    isPublic: ['isPublic', public],
+    flag: ['flag', flag],
     timerType: ['timerType', timerType],
     endAction: ['endAction', endAction],
-    timeWarning: ['timeWarning', parseInt(timeWarning)],
-    timeDanger: ['timeDanger', parseInt(timeDanger)],
+    countToEnd: ['countToEnd', countToEnd],
+    timeWarning: ['timeWarning', floatToMillis(timeWarning)],
+    timeDanger: ['timeDanger', floatToMillis(timeDanger)],
     selectColour: ['colour', selectColour == 'none' ? '' : selectColour],
     pickColour: [
       'colour',
@@ -370,7 +447,7 @@ function changeEvent(
     custom: ['custom:' + customID, customText],
   };
   local.send(
-    '{"type":"change", "payload":{"' + id + '":{"' + changeAction[action][0] + '":"' + changeAction[action][1] + '"}}}',
+    '{"tag":"change", "payload":{"' + id + '":{"' + changeAction[action][0] + '":"' + changeAction[action][1] + '"}}}',
   );
 }
 
